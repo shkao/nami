@@ -1,24 +1,15 @@
-# <img src="assets/app-icon.png" width="28"> Nami (Wave)
+# <img src="assets/app-icon.png" width="32"> Nami (Wave)
 
 A lightweight macOS menu bar app for streaming Japanese regional FM radio stations.
 
-![macOS](https://img.shields.io/badge/macOS-14.0+-blue)
-![Swift](https://img.shields.io/badge/Swift-5.9+-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
+[![macOS](https://img.shields.io/badge/macOS-14.0+-blue)](https://github.com/shkao/Nami)
+[![Swift](https://img.shields.io/badge/Swift-5.9+-orange)](https://github.com/shkao/Nami)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Download](https://img.shields.io/badge/Download-Latest-brightgreen)](../../releases/latest)
 
 <p align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <img src="assets/screenshot.png" alt="Nami Player" width="200"><br>
-        <sub>Player</sub>
-      </td>
-      <td align="center">
-        <img src="assets/screenshot-stations.png" alt="Station Selection" width="200"><br>
-        <sub>Station Selection</sub>
-      </td>
-    </tr>
-  </table>
+  <img src="assets/screenshot.png" alt="Nami Player" width="220" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin: 8px;">
+  <img src="assets/screenshot-stations.png" alt="Station Selection" width="220" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin: 8px;">
 </p>
 
 ## Features
