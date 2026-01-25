@@ -1,4 +1,4 @@
-# Nami (波)
+# Nami (Wave)
 
 A lightweight macOS menu bar app for streaming Japanese regional FM radio stations.
 
