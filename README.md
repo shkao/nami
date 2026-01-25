@@ -31,7 +31,14 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 
 ## Installation
 
-### Option 1: Download Pre-built App (Recommended)
+### Option 1: Homebrew (Recommended)
+
+```bash
+brew tap shkao/tap
+brew install --cask nami
+```
+
+### Option 2: Download Pre-built App
 
 1. Go to [Releases](../../releases)
 2. Download `Nami.zip` from the latest release
@@ -44,7 +51,7 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 > - Select "Open" from the context menu
 > - Click "Open" in the dialog that appears
 
-### Option 2: Build from Source
+### Option 3: Build from Source
 
 #### Requirements
 
@@ -55,7 +62,7 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/Nami.git
+git clone https://github.com/shkao/Nami.git
 cd Nami
 
 # Build the app
