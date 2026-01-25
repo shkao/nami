@@ -1,12 +1,16 @@
-# Nami (Wave)
+<p align="center">
+  <img src="assets/app-icon.png" alt="Nami App Icon" width="128">
+</p>
 
-<img src="assets/app-icon.png" alt="Nami App Icon" width="128" align="right">
+# Nami (Wave)
 
 A lightweight macOS menu bar app for streaming Japanese regional FM radio stations.
 
-![macOS](https://img.shields.io/badge/macOS-14.0+-blue)
-![Swift](https://img.shields.io/badge/Swift-5.9+-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
+<p align="center">
+  <img src="https://img.shields.io/badge/macOS-14.0+-blue" alt="macOS">
+  <img src="https://img.shields.io/badge/Swift-5.9+-orange" alt="Swift">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</p>
 
 <p align="center">
   <table>
