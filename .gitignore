@@ -1,0 +1,31 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+
+# macOS
+.DS_Store
+*.swp
+*~.nib
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Swift Package Manager
+.build/
+Package.resolved
+.swiftpm/
+
+# Archives
+*.xcarchive
+
+# Build artifacts
+Nami.zip
+*.app
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace

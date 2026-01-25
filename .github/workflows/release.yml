@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build Release
+        run: |
+          xcodebuild -scheme Nami \
+            -configuration Release \
+            -derivedDataPath build \
+            -destination 'platform=macOS' \
+            build
+
+      - name: Create ZIP archive
+        run: |
+          cd build/Build/Products/Release
+          zip -r Nami.zip Nami.app
+          mv Nami.zip $GITHUB_WORKSPACE/
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Nami ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## Nami ${{ steps.get_version.outputs.VERSION }}
+
+            ### Installation
+
+            1. Download `Nami.zip` below
+            2. Extract the ZIP file
+            3. Move `Nami.app` to your Applications folder
+            4. Open Nami
+
+            > **First launch**: Right-click the app and select "Open" to bypass Gatekeeper.
+
+            ### What's New
+
+            See [CHANGELOG](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+          files: Nami.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
