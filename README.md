@@ -7,8 +7,18 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 <p align="center">
-  <img src="assets/screenshot.png" alt="Nami Player" width="200">
-  <img src="assets/screenshot-stations.png" alt="Station Selection" width="200">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="assets/screenshot.png" alt="Nami Player" width="200"><br>
+        <sub>Player</sub>
+      </td>
+      <td align="center">
+        <img src="assets/screenshot-stations.png" alt="Station Selection" width="200"><br>
+        <sub>Station Selection</sub>
+      </td>
+    </tr>
+  </table>
 </p>
 
 ## Features
