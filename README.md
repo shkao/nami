@@ -6,6 +6,10 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 ![Swift](https://img.shields.io/badge/Swift-5.9+-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+<p align="center">
+  <img src="assets/screenshot.png" alt="Nami Screenshot" width="200">
+</p>
+
 ## Features
 
 - Stream Japanese regional FM radio stations from the menu bar
