@@ -23,13 +23,13 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 
 ## Stations
 
-| Station | Frequency | Location |
-|---------|-----------|----------|
-| FM Blue Shonan | 78.5 MHz | Yokosuka |
-| Shonan Beach FM | 78.9 MHz | Shonan |
-| Kamakura FM | 82.8 MHz | Kamakura |
-| Chofu FM | 83.8 MHz | Tokyo |
-| FM Salus | 84.1 MHz | Yokohama |
+| Station         | Frequency | Location |
+| --------------- | --------- | -------- |
+| FM Blue Shonan  | 78.5 MHz  | Yokosuka |
+| Shonan Beach FM | 78.9 MHz  | Shonan   |
+| Kamakura FM     | 82.8 MHz  | Kamakura |
+| Chofu FM        | 83.8 MHz  | Tokyo    |
+| FM Salus        | 84.1 MHz  | Yokohama |
 
 ## Installation
 
@@ -49,6 +49,7 @@ brew install --cask nami
 5. Open Nami from Applications
 
 > **Note for unsigned builds**: On first launch, macOS may block the app. To open:
+>
 > - Right-click (or Control-click) on Nami.app
 > - Select "Open" from the context menu
 > - Click "Open" in the dialog that appears
@@ -87,6 +88,7 @@ Or open `Nami.xcodeproj` in Xcode and press `Cmd+R` to build and run.
 ### Signal Quality Indicator
 
 The bars next to the station name show connection quality:
+
 - ▂▄▆ (3 green bars): Excellent connection
 - ▂▄░ (2 green bars): Good connection
 - ▂░░ (1 orange bar): Poor connection (may buffer)
@@ -94,6 +96,7 @@ The bars next to the station name show connection quality:
 ## Configuration
 
 Settings are automatically saved:
+
 - **Volume**: Persisted between sessions
 - **Last Station**: Automatically restored on launch
 
@@ -142,6 +145,7 @@ git push origin v1.0.0
 ```
 
 This will:
+
 1. Build the app in Release configuration
 2. Create a ZIP archive
 3. Create a GitHub Release with the artifact
@@ -153,14 +157,23 @@ This will:
 For unsigned builds, macOS Gatekeeper may block the app:
 
 **Method 1: Right-click to open**
+
 1. Right-click (or Control-click) on Nami.app
 2. Select "Open" from the context menu
 3. Click "Open" in the security dialog
 
 **Method 2: System Settings**
+
 1. Open System Settings → Privacy & Security
 2. Scroll down to find "Nami was blocked"
 3. Click "Open Anyway"
+
+**Method 3: Remove Quarantine Attribute (Advanced)**
+If you are comfortable with the terminal, you can manually remove the quarantine flag:
+
+```bash
+xattr -d com.apple.quarantine /Applications/Nami.app
+```
 
 ### No audio playing
 
@@ -180,6 +193,7 @@ For unsigned builds, macOS Gatekeeper may block the app:
 - Real-time Japanese transcription using mlx-whisper
 - Speech detection to skip music portions
 - Scrolling transcript view
+- Sleep timer (set a specific time to turn off the radio)
 
 ## Contributing
 
