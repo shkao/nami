@@ -110,4 +110,44 @@ final class RadioPlayerTests: XCTestCase {
         let qualities: [SignalQuality] = [.excellent, .good, .poor, .none]
         XCTAssertEqual(qualities.count, 4)
     }
+
+    func testPlayAndWaitForStatusChange() {
+        let player = RadioPlayer()
+        let expectation = XCTestExpectation(description: "Wait for status change")
+
+        player.play()
+
+        // Wait briefly for KVO observers to potentially fire
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // Player should still be in some state
+            // The callbacks may or may not have fired depending on network
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 2.0)
+        player.pause()
+    }
+
+    func testCleanupAfterMultiplePlays() {
+        let player = RadioPlayer()
+
+        // Multiple play/pause cycles should clean up properly
+        player.play()
+        player.pause()
+        player.play()
+        player.pause()
+
+        XCTAssertFalse(player.isPlaying)
+        XCTAssertEqual(player.signalQuality, .none)
+    }
+
+    func testStationPersistence() {
+        let player1 = RadioPlayer()
+        let testStation = Station.fmSalus
+        player1.setStation(testStation)
+
+        // Create new player - should restore saved station
+        let player2 = RadioPlayer()
+        XCTAssertEqual(player2.currentStation, testStation)
+    }
 }

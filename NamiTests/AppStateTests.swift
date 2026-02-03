@@ -175,4 +175,55 @@ final class AppStateTests: XCTestCase {
 
         appState.cancelSleepTimer()
     }
+
+    func testSleepTimerEndDateIsInFuture() {
+        let appState = AppState()
+        let calendar = Calendar.current
+
+        // Set timer for 30 minutes from now
+        let futureTime = calendar.date(byAdding: .minute, value: 30, to: Date())!
+        appState.setSleepTimer(at: futureTime)
+
+        XCTAssertTrue(appState.isSleepTimerActive)
+        XCTAssertNotNil(appState.sleepTimerEndDate)
+
+        if let endDate = appState.sleepTimerEndDate {
+            XCTAssertTrue(endDate > Date())
+            // Should be approximately 30 minutes from now
+            let diff = endDate.timeIntervalSinceNow
+            XCTAssertGreaterThan(diff, 29 * 60)
+            XCTAssertLessThan(diff, 31 * 60)
+        }
+
+        appState.cancelSleepTimer()
+    }
+
+    func testPlayPauseCycle() {
+        let appState = AppState()
+
+        // Multiple cycles
+        for _ in 0..<3 {
+            appState.play()
+            appState.pause()
+        }
+
+        XCTAssertFalse(appState.isPlaying)
+        XCTAssertFalse(appState.isLoading)
+    }
+
+    func testStationCycleThrough() {
+        let appState = AppState()
+        let stationCount = Station.allStations.count
+
+        // Cycle through all stations using next
+        appState.currentStation = Station.allStations[0]
+        for i in 1..<stationCount {
+            appState.nextStation()
+            XCTAssertEqual(appState.currentStation, Station.allStations[i])
+        }
+
+        // One more should wrap to first
+        appState.nextStation()
+        XCTAssertEqual(appState.currentStation, Station.allStations[0])
+    }
 }
