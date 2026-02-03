@@ -28,14 +28,14 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES"
-      codeCoverageEnabled = "YES">
+      codeCoverageEnabled = "YES"
+      shouldAutocreateTestPlan = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E60E5B54CEF496E598647C19"
+               BlueprintIdentifier = "E55CB2007B880892A792BAC0"
                BuildableName = "NamiTests.xctest"
                BlueprintName = "NamiTests"
                ReferencedContainer = "container:Nami.xcodeproj">
@@ -45,7 +45,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B42B23AFF6C701F09AD495CA"
+               BlueprintIdentifier = "E55CB2007B880892A792BAC0"
                BuildableName = "NamiTests.xctest"
                BlueprintName = "NamiTests"
                ReferencedContainer = "container:Nami.xcodeproj">
@@ -55,7 +55,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "901C98B23F707C6E873AF559"
+               BlueprintIdentifier = "E55CB2007B880892A792BAC0"
                BuildableName = "NamiTests.xctest"
                BlueprintName = "NamiTests"
                ReferencedContainer = "container:Nami.xcodeproj">
@@ -65,7 +65,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A7CC89FEFEF7A76DEB6C1E2B"
+               BlueprintIdentifier = "E55CB2007B880892A792BAC0"
                BuildableName = "NamiTests.xctest"
                BlueprintName = "NamiTests"
                ReferencedContainer = "container:Nami.xcodeproj">
@@ -75,7 +75,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D151B0A347D2BD77664F2FB3"
+               BlueprintIdentifier = "E55CB2007B880892A792BAC0"
                BuildableName = "NamiTests.xctest"
                BlueprintName = "NamiTests"
                ReferencedContainer = "container:Nami.xcodeproj">
@@ -85,7 +85,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6517212A5D209F81A993D139"
+               BlueprintIdentifier = "E55CB2007B880892A792BAC0"
                BuildableName = "NamiTests.xctest"
                BlueprintName = "NamiTests"
                ReferencedContainer = "container:Nami.xcodeproj">
@@ -95,7 +95,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3D8645D441E35FB2E73EB9BB"
+               BlueprintIdentifier = "E55CB2007B880892A792BAC0"
                BuildableName = "NamiTests.xctest"
                BlueprintName = "NamiTests"
                ReferencedContainer = "container:Nami.xcodeproj">
