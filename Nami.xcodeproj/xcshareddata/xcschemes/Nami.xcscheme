@@ -61,6 +61,16 @@
                ReferencedContainer = "container:Nami.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A7CC89FEFEF7A76DEB6C1E2B"
+               BuildableName = "NamiTests.xctest"
+               BlueprintName = "NamiTests"
+               ReferencedContainer = "container:Nami.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
