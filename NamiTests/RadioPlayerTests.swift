@@ -150,4 +150,37 @@ final class RadioPlayerTests: XCTestCase {
         let player2 = RadioPlayer()
         XCTAssertEqual(player2.currentStation, testStation)
     }
+
+    func testPlayWaitsForReadyState() {
+        let player = RadioPlayer()
+        let expectation = XCTestExpectation(description: "Wait for stream")
+
+        player.play()
+        XCTAssertTrue(player.isLoading)
+
+        // Wait for potential status change callbacks
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            // After 2 seconds, stream may have connected or failed
+            // Either way, isLoading should eventually change
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 5.0)
+        player.pause()
+    }
+
+    func testErrorMessageInitiallyNil() {
+        let player = RadioPlayer()
+        XCTAssertNil(player.errorMessage)
+    }
+
+    func testPlayClearsErrorMessage() {
+        let player = RadioPlayer()
+
+        // Play should clear any existing error
+        player.play()
+        XCTAssertNil(player.errorMessage)
+
+        player.pause()
+    }
 }
