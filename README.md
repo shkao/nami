@@ -2,11 +2,11 @@
 
 A lightweight macOS menu bar app for streaming Japanese regional FM radio stations.
 
+[![CI](https://github.com/shkao/Nami/actions/workflows/ci.yml/badge.svg)](https://github.com/shkao/Nami/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/shkao/Nami/branch/main/graph/badge.svg)](https://codecov.io/gh/shkao/Nami)
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue)](https://github.com/shkao/Nami)
 [![Swift](https://img.shields.io/badge/Swift-5.9+-orange)](https://github.com/shkao/Nami)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![CI](https://github.com/shkao/Nami/actions/workflows/ci.yml/badge.svg)](https://github.com/shkao/Nami/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/shkao/Nami/branch/main/graph/badge.svg)](https://codecov.io/gh/shkao/Nami)
 [![Download](https://img.shields.io/badge/Download-Latest-brightgreen)](../../releases/latest)
 
 <p align="center">
