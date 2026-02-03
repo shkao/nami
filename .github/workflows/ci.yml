@@ -33,3 +33,32 @@ jobs:
             -configuration Release \
             -destination 'platform=macOS' \
             build
+
+  test:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
+      - name: Install xcodeproj gem
+        run: gem install xcodeproj
+
+      - name: Setup test target
+        run: ruby scripts/add_test_target.rb
+
+      - name: Run tests with coverage
+        run: |
+          xcodebuild test \
+            -scheme Nami \
+            -destination 'platform=macOS' \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults.xcresult
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

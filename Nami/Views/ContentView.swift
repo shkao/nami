@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
     @Bindable var appState: AppState
+    @State private var showTimePicker = false
+    @State private var selectedTime = Calendar.current.date(from: DateComponents(hour: 23, minute: 50)) ?? Date()
 
     private var signalIndicator: some View {
         signalBars(for: appState.isPlaying ? appState.signalQuality : .none)
@@ -138,6 +140,53 @@ struct ContentView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 12)
 
+            // Sleep Timer
+            VStack(spacing: 6) {
+                Button {
+                    if appState.isSleepTimerActive {
+                        appState.cancelSleepTimer()
+                    } else {
+                        showTimePicker.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: appState.isSleepTimerActive ? "moon.fill" : "moon")
+                            .font(.system(size: 10))
+                        if let endDate = appState.sleepTimerEndDate {
+                            Text("Off at \(endDate, format: .dateTime.hour().minute())")
+                                .font(.system(size: 10))
+                        } else {
+                            Text("Sleep Timer")
+                                .font(.system(size: 10))
+                        }
+                    }
+                    .foregroundStyle(appState.isSleepTimerActive ? .primary : .secondary)
+                }
+                .buttonStyle(.plain)
+
+                if showTimePicker {
+                    HStack(spacing: 8) {
+                        DatePicker(
+                            "",
+                            selection: $selectedTime,
+                            displayedComponents: .hourAndMinute
+                        )
+                        .datePickerStyle(.field)
+                        .labelsHidden()
+                        .frame(width: 70)
+
+                        Button("Set") {
+                            appState.setSleepTimer(at: selectedTime)
+                            showTimePicker = false
+                        }
+                        .font(.system(size: 10))
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.top, 4)
+                }
+            }
+            .padding(.bottom, 12)
+
             // Quit
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
@@ -149,6 +198,7 @@ struct ContentView: View {
         }
         .frame(width: 200)
     }
+
 }
 
 #Preview {

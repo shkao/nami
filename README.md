@@ -5,6 +5,8 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue)](https://github.com/shkao/Nami)
 [![Swift](https://img.shields.io/badge/Swift-5.9+-orange)](https://github.com/shkao/Nami)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![CI](https://github.com/shkao/Nami/actions/workflows/ci.yml/badge.svg)](https://github.com/shkao/Nami/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/shkao/Nami/branch/main/graph/badge.svg)](https://codecov.io/gh/shkao/Nami)
 [![Download](https://img.shields.io/badge/Download-Latest-brightgreen)](../../releases/latest)
 
 <p align="center">
@@ -18,6 +20,7 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 - Real-time signal quality indicator
 - Volume control with persistence
 - Quick station switching with previous/next buttons
+- Sleep timer to auto-stop playback at a specific time
 - Remembers your last station and volume settings
 - Minimal resource usage (~30MB memory)
 
@@ -83,7 +86,18 @@ Or open `Nami.xcodeproj` in Xcode and press `Cmd+R` to build and run.
 2. Click the play button to start streaming
 3. Use the dropdown to select a station, or use ⏮/⏭ to switch
 4. Adjust volume with the slider
-5. Click "Quit" to exit
+5. Set a sleep timer to auto-stop at a specific time
+6. Click "Quit" to exit
+
+### Sleep Timer
+
+Click "Sleep Timer" to set a time for the radio to automatically stop:
+
+1. Click the moon icon to open the time picker
+2. Set your desired stop time (defaults to 23:50)
+3. Click "Set" to activate
+4. The timer shows "Off at [time]" when active
+5. Click again to cancel
 
 ### Signal Quality Indicator
 
@@ -111,13 +125,16 @@ Nami/
 ├── Audio/
 │   └── RadioPlayer.swift     # AVPlayer wrapper, stream handling
 ├── Models/
-│   ├── AppState.swift        # Observable app state
+│   ├── AppState.swift        # Observable app state, sleep timer
 │   └── Station.swift         # Station definitions
 ├── Views/
 │   └── ContentView.swift     # Main popover UI
 └── Resources/
     ├── Assets.xcassets       # App icons
     └── Info.plist            # App configuration (LSUIElement=YES)
+
+NamiTests/
+└── AppStateTests.swift       # Unit tests for AppState
 ```
 
 ## Development
@@ -133,6 +150,20 @@ xcodebuild -scheme Nami -configuration Release build
 
 # Clean build
 xcodebuild -scheme Nami clean build
+```
+
+### Testing
+
+```bash
+# Setup test target (first time only)
+gem install xcodeproj
+ruby scripts/add_test_target.rb
+
+# Run tests
+xcodebuild test -scheme Nami -destination 'platform=macOS'
+
+# Run tests with coverage
+xcodebuild test -scheme Nami -destination 'platform=macOS' -enableCodeCoverage YES
 ```
 
 ### Creating a Release
@@ -193,7 +224,6 @@ xattr -d com.apple.quarantine /Applications/Nami.app
 - Real-time Japanese transcription using mlx-whisper
 - Speech detection to skip music portions
 - Scrolling transcript view
-- Sleep timer (set a specific time to turn off the radio)
 
 ## Contributing
 
