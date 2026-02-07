@@ -97,7 +97,8 @@ Click "Sleep Timer" to set a time for the radio to automatically stop:
 2. Set your desired stop time (defaults to 23:50)
 3. Click "Set" to activate
 4. The timer shows "Off at [time]" when active
-5. Click again to cancel
+5. Click again to modify the timer, then click "Update"
+6. Click "Off" in the picker to cancel
 
 ### Signal Quality Indicator
 

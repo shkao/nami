@@ -144,7 +144,8 @@ struct ContentView: View {
             VStack(spacing: 6) {
                 Button {
                     if appState.isSleepTimerActive {
-                        appState.cancelSleepTimer()
+                        selectedTime = appState.sleepTimerEndDate ?? selectedTime
+                        showTimePicker = true
                     } else {
                         showTimePicker.toggle()
                     }
@@ -175,12 +176,21 @@ struct ContentView: View {
                         .labelsHidden()
                         .frame(width: 70)
 
-                        Button("Set") {
+                        Button(appState.isSleepTimerActive ? "Update" : "Set") {
                             appState.setSleepTimer(at: selectedTime)
                             showTimePicker = false
                         }
                         .font(.system(size: 10))
                         .buttonStyle(.plain)
+
+                        if appState.isSleepTimerActive {
+                            Button("Off") {
+                                appState.cancelSleepTimer()
+                                showTimePicker = false
+                            }
+                            .font(.system(size: 10))
+                            .buttonStyle(.plain)
+                        }
                     }
                     .padding(.top, 4)
                 }
