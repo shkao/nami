@@ -226,4 +226,40 @@ final class AppStateTests: XCTestCase {
         appState.nextStation()
         XCTAssertEqual(appState.currentStation, Station.allStations[0])
     }
+
+    func testWakeNotificationDoesNotCrash() {
+        let appState = AppState()
+        let calendar = Calendar.current
+
+        // Set a timer far in the future
+        let futureTime = calendar.date(byAdding: .hour, value: 2, to: Date())!
+        appState.setSleepTimer(at: futureTime)
+
+        // Post wake notification - should call checkSleepTimer() which should NOT fire
+        // since the timer end date is still in the future
+        NSWorkspace.shared.notificationCenter.post(
+            name: NSWorkspace.didWakeNotification,
+            object: nil
+        )
+
+        // Timer should still be active since end date hasn't passed
+        XCTAssertTrue(appState.isSleepTimerActive)
+
+        appState.cancelSleepTimer()
+    }
+
+    func testWakeNotificationWithNoTimer() {
+        let appState = AppState()
+
+        // No timer set
+        XCTAssertFalse(appState.isSleepTimerActive)
+
+        // Post wake notification - checkSleepTimer guard should early return
+        NSWorkspace.shared.notificationCenter.post(
+            name: NSWorkspace.didWakeNotification,
+            object: nil
+        )
+
+        XCTAssertFalse(appState.isSleepTimerActive)
+    }
 }
