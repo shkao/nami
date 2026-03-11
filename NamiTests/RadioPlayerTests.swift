@@ -183,4 +183,26 @@ final class RadioPlayerTests: XCTestCase {
 
         player.pause()
     }
+
+    func testInitializationUsesSavedStationOrDefaults() {
+        // Test that initialization uses saved station from UserDefaults
+        let testStation = Station.fmSalus
+        UserDefaults.standard.set(testStation.id, forKey: "stationId")
+
+        let player = RadioPlayer()
+        XCTAssertEqual(player.currentStation, testStation)
+
+        // Clean up
+        UserDefaults.standard.removeObject(forKey: "stationId")
+    }
+
+    func testInitializationDefaultsToShonanBeachFMWhenNoSavedStation() {
+        // Ensure no saved station
+        UserDefaults.standard.removeObject(forKey: "stationId")
+
+        let player = RadioPlayer()
+        XCTAssertEqual(player.currentStation, .shonanBeachFM)
+    }
+
+
 }

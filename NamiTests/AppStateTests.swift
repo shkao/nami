@@ -262,4 +262,5 @@ final class AppStateTests: XCTestCase {
 
         XCTAssertFalse(appState.isSleepTimerActive)
     }
+
 }
