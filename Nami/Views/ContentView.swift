@@ -3,7 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @Bindable var appState: AppState
     @State private var showTimePicker = false
-    @State private var selectedTime = Calendar.current.date(from: DateComponents(hour: 23, minute: 50)) ?? Date()
+    @State private var selectedTime = Calendar.current.date(from: DateComponents(hour: 22, minute: 30)) ?? Date()
 
     private var signalIndicator: some View {
         signalBars(for: appState.isPlaying ? appState.signalQuality : .none)

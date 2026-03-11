@@ -94,7 +94,7 @@ Or open `Nami.xcodeproj` in Xcode and press `Cmd+R` to build and run.
 Click "Sleep Timer" to set a time for the radio to automatically stop:
 
 1. Click the moon icon to open the time picker
-2. Set your desired stop time (defaults to 23:50)
+2. Set your desired stop time (defaults to 22:30)
 3. Click "Set" to activate
 4. The timer shows "Off at [time]" when active
 5. Click again to modify the timer, then click "Update"
