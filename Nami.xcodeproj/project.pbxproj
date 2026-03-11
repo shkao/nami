@@ -7,31 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		124B0C979819687ABC128EB3 /* StationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820BA1AE1453536C6B153CC3 /* StationTests.swift */; };
-		373CFBCCAB34530C72534DCA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BEF01093A2E91907A83A2F5 /* Cocoa.framework */; };
-		5FA8680B309E8719FAD488CF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BEF01093A2E91907A83A2F5 /* Cocoa.framework */; };
-		69ACCBDABCE30F3B78A0E74C /* RadioPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24CA376D14334818BE6D941F /* RadioPlayerTests.swift */; };
-		75A44DBD40AFC5DF5A9CC806 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6446C0B42F59C0F13CA74D /* AppStateTests.swift */; };
+		041660043779A511266C7A25 /* StationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E9BBFE5138AB04AD97494C /* StationTests.swift */; };
+		07097FD17AA7BAFDAFB1EC07 /* NamiAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAEB6E6FCC1E45361860DA29 /* NamiAppTests.swift */; };
+		4F49F5B6F1EC6561AC0D2526 /* RadioPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF446DE2365522BFC3385FB /* RadioPlayerTests.swift */; };
+		6873B6114D0068DEC199F075 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500B7D6BEE0D6EEC0B4D03F6 /* AppStateTests.swift */; };
+		6B979B96C05A6999A5526221 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BEF01093A2E91907A83A2F5 /* Cocoa.framework */; };
+		7DE06E88949C144C441431A3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BEF01093A2E91907A83A2F5 /* Cocoa.framework */; };
+		9E69FAC74095EE99D9295117 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B808EB29CB22F206305F6C /* AppStateTests.swift */; };
 		A1000001238F00001 /* NamiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001238F00011 /* NamiApp.swift */; };
 		A1000001238F00002 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001238F00012 /* AppState.swift */; };
 		A1000001238F00003 /* RadioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001238F00013 /* RadioPlayer.swift */; };
 		A1000001238F00004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001238F00014 /* ContentView.swift */; };
 		A1000001238F00006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000001238F00016 /* Assets.xcassets */; };
 		A1000001238F00007 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001238F00018 /* Station.swift */; };
-		B0B5F37AF3F1E51C531CA978 /* StationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114E7AE48A626E035B8905D /* StationTests.swift */; };
-		E4100B17D06BE531DA44E191 /* RadioPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0696B543F9603C671B9D428 /* RadioPlayerTests.swift */; };
-		ED1FE2788EF56F65FA99428C /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC6426C3E51260EDDF9E49B /* AppStateTests.swift */; };
+		A2DC05661CA790CFA871C01C /* StationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB7EAE0A30B3CB88A83141E /* StationTests.swift */; };
+		C996733EA9EFA680B868C3C4 /* RadioPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EE1A3BF33D61BC5BDD76AA /* RadioPlayerTests.swift */; };
+		D58222E7FB8CEEC85116B5D1 /* NamiAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E678A249627B4244E43BD6C9 /* NamiAppTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		829587BE848AF432868B4868 /* PBXContainerItemProxy */ = {
+		2FE2A20CDD94CEB13E6960EE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1000001238F00050 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A1000001238F00040;
 			remoteInfo = Nami;
 		};
-		BC13AEB8D6E2F8528574FB8B /* PBXContainerItemProxy */ = {
+		362C20BA40981C2B0BD0D27A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1000001238F00050 /* Project object */;
 			proxyType = 1;
@@ -42,18 +44,19 @@
 
 /* Begin PBXFileReference section */
 		197B328ABB09A8ADBA0C8ED2 /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2114E7AE48A626E035B8905D /* StationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StationTests.swift; sourceTree = "<group>"; };
-		24CA376D14334818BE6D941F /* RadioPlayerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RadioPlayerTests.swift; sourceTree = "<group>"; };
+		19EE1A3BF33D61BC5BDD76AA /* RadioPlayerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RadioPlayerTests.swift; sourceTree = "<group>"; };
+		2B05E1AA2493957B2AF4EEF9 /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D4AC98D0A20665E65B5AD45 /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DB7EAE0A30B3CB88A83141E /* StationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StationTests.swift; sourceTree = "<group>"; };
 		3A9D625C5793876D20CBCA6F /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3EBBD69825021706B31A9B9A /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		500B7D6BEE0D6EEC0B4D03F6 /* AppStateTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		50142BB5077EA5A4587CC3D4 /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		55182EB17ED23E28205F0E86 /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C9CB0809CD7BBDD720AE6EE /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		702452B03784E23B6F7F7ABD /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		820BA1AE1453536C6B153CC3 /* StationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StationTests.swift; sourceTree = "<group>"; };
 		89716ABC7B83341F6EDC1683 /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BEF01093A2E91907A83A2F5 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
-		A0696B543F9603C671B9D428 /* RadioPlayerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RadioPlayerTests.swift; sourceTree = "<group>"; };
 		A1000001238F00010 /* Nami.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nami.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1000001238F00011 /* NamiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamiApp.swift; sourceTree = "<group>"; };
 		A1000001238F00012 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -62,8 +65,11 @@
 		A1000001238F00016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000001238F00017 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1000001238F00018 /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
-		CE6446C0B42F59C0F13CA74D /* AppStateTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
-		EEC6426C3E51260EDDF9E49B /* AppStateTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
+		A4E9BBFE5138AB04AD97494C /* StationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StationTests.swift; sourceTree = "<group>"; };
+		BAEB6E6FCC1E45361860DA29 /* NamiAppTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NamiAppTests.swift; sourceTree = "<group>"; };
+		DCF446DE2365522BFC3385FB /* RadioPlayerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RadioPlayerTests.swift; sourceTree = "<group>"; };
+		E1B808EB29CB22F206305F6C /* AppStateTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
+		E678A249627B4244E43BD6C9 /* NamiAppTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NamiAppTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,11 +80,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CF45A01A930E1B7130E418E2 /* Frameworks */ = {
+		FFD282D72C732E605A8A25E0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FA8680B309E8719FAD488CF /* Cocoa.framework in Frameworks */,
+				6B979B96C05A6999A5526221 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,24 +107,13 @@
 			name = "OS X";
 			sourceTree = "<group>";
 		};
-		54BF6B2F64123F3318972230 /* NamiTests */ = {
-			isa = PBXGroup;
-			children = (
-				820BA1AE1453536C6B153CC3 /* StationTests.swift */,
-				EEC6426C3E51260EDDF9E49B /* AppStateTests.swift */,
-				24CA376D14334818BE6D941F /* RadioPlayerTests.swift */,
-			);
-			name = NamiTests;
-			path = NamiTests;
-			sourceTree = "<group>";
-		};
 		A1000001238F00030 = {
 			isa = PBXGroup;
 			children = (
 				A1000001238F00031 /* Nami */,
 				A1000001238F00039 /* Products */,
 				294A569C99F13BAD7EE7A298 /* Frameworks */,
-				54BF6B2F64123F3318972230 /* NamiTests */,
+				C54755EE49FC8BC523CD97A8 /* NamiTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -188,13 +183,45 @@
 				2D4AC98D0A20665E65B5AD45 /* NamiTests.xctest */,
 				197B328ABB09A8ADBA0C8ED2 /* NamiTests.xctest */,
 				50142BB5077EA5A4587CC3D4 /* NamiTests.xctest */,
+				2B05E1AA2493957B2AF4EEF9 /* NamiTests.xctest */,
+				55182EB17ED23E28205F0E86 /* NamiTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C54755EE49FC8BC523CD97A8 /* NamiTests */ = {
+			isa = PBXGroup;
+			children = (
+				2DB7EAE0A30B3CB88A83141E /* StationTests.swift */,
+				500B7D6BEE0D6EEC0B4D03F6 /* AppStateTests.swift */,
+				E678A249627B4244E43BD6C9 /* NamiAppTests.swift */,
+				19EE1A3BF33D61BC5BDD76AA /* RadioPlayerTests.swift */,
+			);
+			name = NamiTests;
+			path = NamiTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3D612C97494321A1D7B9507A /* NamiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8412AA5C55075CD46485CB20 /* Build configuration list for PBXNativeTarget "NamiTests" */;
+			buildPhases = (
+				EDD351A030688F93DC758706 /* Sources */,
+				FFD282D72C732E605A8A25E0 /* Frameworks */,
+				15732EFA42E6E863EBE6C951 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1FDCC9392E7B0C7DB365CF0D /* PBXTargetDependency */,
+			);
+			name = NamiTests;
+			productName = NamiTests;
+			productReference = 55182EB17ED23E28205F0E86 /* NamiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A1000001238F00040 /* Nami */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A1000001238F00060 /* Build configuration list for PBXNativeTarget "Nami" */;
@@ -211,24 +238,6 @@
 			productName = Nami;
 			productReference = A1000001238F00010 /* Nami.app */;
 			productType = "com.apple.product-type.application";
-		};
-		E55CB2007B880892A792BAC0 /* NamiTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5098EE2393C2A58CE6D30A3A /* Build configuration list for PBXNativeTarget "NamiTests" */;
-			buildPhases = (
-				5A25C055D66CC0DB047EEEB0 /* Sources */,
-				CF45A01A930E1B7130E418E2 /* Frameworks */,
-				67A1318CFA8C45EAD6A7FA2A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C33F18FEAC23E46CBC3C69C3 /* PBXTargetDependency */,
-			);
-			name = NamiTests;
-			productName = NamiTests;
-			productReference = 50142BB5077EA5A4587CC3D4 /* NamiTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -259,13 +268,13 @@
 			projectRoot = "";
 			targets = (
 				A1000001238F00040 /* Nami */,
-				E55CB2007B880892A792BAC0 /* NamiTests */,
+				3D612C97494321A1D7B9507A /* NamiTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		67A1318CFA8C45EAD6A7FA2A /* Resources */ = {
+		15732EFA42E6E863EBE6C951 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -283,16 +292,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		5A25C055D66CC0DB047EEEB0 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				124B0C979819687ABC128EB3 /* StationTests.swift in Sources */,
-				ED1FE2788EF56F65FA99428C /* AppStateTests.swift in Sources */,
-				69ACCBDABCE30F3B78A0E74C /* RadioPlayerTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A1000001238F00041 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -305,65 +304,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EDD351A030688F93DC758706 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2DC05661CA790CFA871C01C /* StationTests.swift in Sources */,
+				6873B6114D0068DEC199F075 /* AppStateTests.swift in Sources */,
+				D58222E7FB8CEEC85116B5D1 /* NamiAppTests.swift in Sources */,
+				C996733EA9EFA680B868C3C4 /* RadioPlayerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		C33F18FEAC23E46CBC3C69C3 /* PBXTargetDependency */ = {
+		1FDCC9392E7B0C7DB365CF0D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Nami;
 			target = A1000001238F00040 /* Nami */;
-			targetProxy = BC13AEB8D6E2F8528574FB8B /* PBXContainerItemProxy */;
+			targetProxy = 362C20BA40981C2B0BD0D27A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1E37BCF7E4DC6B3957023AEA /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nami.NamiTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nami.app/Contents/MacOS/Nami";
-			};
-			name = Release;
-		};
-		434C954033FCA3FB39D80507 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nami.NamiTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nami.app/Contents/MacOS/Nami";
-			};
-			name = Release;
-		};
-		7C35FE7169D5DE5D990CB8CE /* Debug */ = {
+		3915F75BFB823376C0A3D7B8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -386,7 +350,7 @@
 			};
 			name = Debug;
 		};
-		8E7350FF3CD2C0200A805355 /* Debug */ = {
+		74E7009C235563E323D1A697 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -583,14 +547,60 @@
 			};
 			name = Release;
 		};
+		C1CFE4FB6EB2B17EB4D1B527 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nami.NamiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nami.app/Contents/MacOS/Nami";
+			};
+			name = Release;
+		};
+		FF2DA9850800C34016616A78 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nami.NamiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nami.app/Contents/MacOS/Nami";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5098EE2393C2A58CE6D30A3A /* Build configuration list for PBXNativeTarget "NamiTests" */ = {
+		8412AA5C55075CD46485CB20 /* Build configuration list for PBXNativeTarget "NamiTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				434C954033FCA3FB39D80507 /* Release */,
-				8E7350FF3CD2C0200A805355 /* Debug */,
+				FF2DA9850800C34016616A78 /* Release */,
+				74E7009C235563E323D1A697 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

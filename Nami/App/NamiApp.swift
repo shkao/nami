@@ -13,10 +13,10 @@ struct NamiApp: App {
 
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
-    private var statusItem: NSStatusItem!
-    private var popover: NSPopover!
+    var statusItem: NSStatusItem!
+    var popover: NSPopover!
     private var appState = AppState()
-    private var eventMonitor: Any?
+    var eventMonitor: Any?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusItem()
@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupEventMonitor()
     }
 
-    private func setupStatusItem() {
+    func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem.button {
@@ -34,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func setupPopover() {
+    func setupPopover() {
         popover = NSPopover()
         popover.contentSize = NSSize(width: 200, height: 320)
         popover.behavior = .transient
@@ -42,7 +42,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         popover.contentViewController = NSHostingController(rootView: ContentView(appState: appState))
     }
 
-    private func setupEventMonitor() {
+    func setupEventMonitor() {
         eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
             if let popover = self?.popover, popover.isShown {
                 popover.performClose(nil)
@@ -50,7 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @objc private func togglePopover() {
+    @objc func togglePopover() {
         guard let button = statusItem.button else { return }
 
         if popover.isShown {
