@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  test:
     runs-on: macos-14
 
     steps:
@@ -19,8 +19,37 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
-      - name: Show Xcode version
-        run: xcodebuild -version
+      - name: Install xcodeproj gem
+        run: gem install xcodeproj
+
+      - name: Setup test target
+        run: ruby scripts/add_test_target.rb
+
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -scheme Nami \
+            -destination 'platform=macOS' \
+            -enableCodeCoverage YES
+
+  build-and-release:
+    needs: test
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "VERSION=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "SHORT_VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "BUILD_NUMBER=$(date +%Y%m%d%H%M)" >> $GITHUB_OUTPUT
 
       - name: Build Release
         run: |
@@ -28,6 +57,8 @@ jobs:
             -configuration Release \
             -derivedDataPath build \
             -destination 'platform=macOS' \
+            MARKETING_VERSION=${{ steps.get_version.outputs.SHORT_VERSION }} \
+            CURRENT_PROJECT_VERSION=${{ steps.get_version.outputs.BUILD_NUMBER }} \
             build
 
       - name: Create ZIP archive
@@ -35,10 +66,6 @@ jobs:
           cd build/Build/Products/Release
           zip -r Nami.zip Nami.app
           mv Nami.zip $GITHUB_WORKSPACE/
-
-      - name: Get version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v1

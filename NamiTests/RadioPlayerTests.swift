@@ -1,6 +1,7 @@
 import XCTest
 @testable import Nami
 
+@MainActor
 final class RadioPlayerTests: XCTestCase {
 
     func testInitialState() {
@@ -8,6 +9,7 @@ final class RadioPlayerTests: XCTestCase {
 
         XCTAssertFalse(player.isPlaying)
         XCTAssertFalse(player.isLoading)
+        XCTAssertFalse(player.isReconnecting)
         XCTAssertEqual(player.signalQuality, .none)
         XCTAssertNil(player.errorMessage)
     }
@@ -15,7 +17,6 @@ final class RadioPlayerTests: XCTestCase {
     func testDefaultStation() {
         let player = RadioPlayer()
 
-        // Should have a valid station
         XCTAssertNotNil(player.currentStation)
         XCTAssertFalse(player.currentStation.id.isEmpty)
     }
@@ -38,7 +39,6 @@ final class RadioPlayerTests: XCTestCase {
 
         player.play()
 
-        // Play should set loading to true initially
         XCTAssertTrue(player.isLoading)
         XCTAssertTrue(player.isPlaying)
 
@@ -53,6 +53,7 @@ final class RadioPlayerTests: XCTestCase {
 
         XCTAssertFalse(player.isPlaying)
         XCTAssertFalse(player.isLoading)
+        XCTAssertFalse(player.isReconnecting)
         XCTAssertEqual(player.signalQuality, .none)
     }
 
@@ -71,11 +72,9 @@ final class RadioPlayerTests: XCTestCase {
         player.play()
         XCTAssertTrue(player.isPlaying)
 
-        // Change station while playing
         let newStation = Station.chofuFM
         player.setStation(newStation)
 
-        // Should still be playing with new station
         XCTAssertEqual(player.currentStation, newStation)
         XCTAssertTrue(player.isPlaying)
 
@@ -85,7 +84,6 @@ final class RadioPlayerTests: XCTestCase {
     func testSetStationWhilePaused() {
         let player = RadioPlayer()
 
-        // Change station while paused
         let newStation = Station.fmSalus
         player.setStation(newStation)
 
@@ -106,9 +104,11 @@ final class RadioPlayerTests: XCTestCase {
     }
 
     func testSignalQualityEnum() {
-        // Test all signal quality cases exist
         let qualities: [SignalQuality] = [.excellent, .good, .poor, .none]
         XCTAssertEqual(qualities.count, 4)
+
+        XCTAssertEqual(SignalQuality.excellent, SignalQuality.excellent)
+        XCTAssertNotEqual(SignalQuality.excellent, SignalQuality.poor)
     }
 
     func testPlayAndWaitForStatusChange() {
@@ -117,10 +117,7 @@ final class RadioPlayerTests: XCTestCase {
 
         player.play()
 
-        // Wait briefly for KVO observers to potentially fire
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            // Player should still be in some state
-            // The callbacks may or may not have fired depending on network
             expectation.fulfill()
         }
 
@@ -131,7 +128,6 @@ final class RadioPlayerTests: XCTestCase {
     func testCleanupAfterMultiplePlays() {
         let player = RadioPlayer()
 
-        // Multiple play/pause cycles should clean up properly
         player.play()
         player.pause()
         player.play()
@@ -146,7 +142,6 @@ final class RadioPlayerTests: XCTestCase {
         let testStation = Station.fmSalus
         player1.setStation(testStation)
 
-        // Create new player - should restore saved station
         let player2 = RadioPlayer()
         XCTAssertEqual(player2.currentStation, testStation)
     }
@@ -158,10 +153,7 @@ final class RadioPlayerTests: XCTestCase {
         player.play()
         XCTAssertTrue(player.isLoading)
 
-        // Wait for potential status change callbacks
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            // After 2 seconds, stream may have connected or failed
-            // Either way, isLoading should eventually change
             expectation.fulfill()
         }
 
@@ -177,7 +169,6 @@ final class RadioPlayerTests: XCTestCase {
     func testPlayClearsErrorMessage() {
         let player = RadioPlayer()
 
-        // Play should clear any existing error
         player.play()
         XCTAssertNil(player.errorMessage)
 
@@ -185,24 +176,65 @@ final class RadioPlayerTests: XCTestCase {
     }
 
     func testInitializationUsesSavedStationOrDefaults() {
-        // Test that initialization uses saved station from UserDefaults
         let testStation = Station.fmSalus
         UserDefaults.standard.set(testStation.id, forKey: "stationId")
 
         let player = RadioPlayer()
         XCTAssertEqual(player.currentStation, testStation)
 
-        // Clean up
         UserDefaults.standard.removeObject(forKey: "stationId")
     }
 
     func testInitializationDefaultsToShonanBeachFMWhenNoSavedStation() {
-        // Ensure no saved station
         UserDefaults.standard.removeObject(forKey: "stationId")
 
         let player = RadioPlayer()
         XCTAssertEqual(player.currentStation, .shonanBeachFM)
     }
 
+    // MARK: - Reconnection Tests
 
+    func testPauseCancelsReconnect() {
+        let player = RadioPlayer()
+
+        player.play()
+        player.pause()
+
+        XCTAssertFalse(player.isReconnecting)
+    }
+
+    func testPlayResetsReconnectState() {
+        let player = RadioPlayer()
+
+        player.play()
+
+        // Fresh play should not be in reconnecting state
+        XCTAssertFalse(player.isReconnecting)
+
+        player.pause()
+    }
+
+    func testHandleWakeWhileNotPlaying() {
+        let player = RadioPlayer()
+
+        // Should not crash or start playing
+        player.handleWake()
+
+        XCTAssertFalse(player.isPlaying)
+        XCTAssertFalse(player.isReconnecting)
+    }
+
+    func testHandleWakeWhilePlaying() {
+        let player = RadioPlayer()
+
+        player.play()
+        XCTAssertTrue(player.isPlaying)
+
+        player.handleWake()
+
+        // Should be attempting to reconnect
+        XCTAssertTrue(player.isPlaying)
+
+        player.pause()
+    }
 }

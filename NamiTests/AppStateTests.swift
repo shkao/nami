@@ -1,6 +1,7 @@
 import XCTest
 @testable import Nami
 
+@MainActor
 final class AppStateTests: XCTestCase {
 
     func testInitialState() {
@@ -8,6 +9,7 @@ final class AppStateTests: XCTestCase {
 
         XCTAssertFalse(appState.isPlaying)
         XCTAssertFalse(appState.isLoading)
+        XCTAssertFalse(appState.isReconnecting)
         XCTAssertFalse(appState.isSleepTimerActive)
         XCTAssertNil(appState.sleepTimerEndDate)
         XCTAssertNil(appState.errorMessage)
@@ -16,7 +18,6 @@ final class AppStateTests: XCTestCase {
     func testSleepTimerSetAndCancel() {
         let appState = AppState()
 
-        // Set sleep timer for 1 hour from now
         let calendar = Calendar.current
         let futureTime = calendar.date(byAdding: .hour, value: 1, to: Date())!
 
@@ -25,7 +26,6 @@ final class AppStateTests: XCTestCase {
         XCTAssertTrue(appState.isSleepTimerActive)
         XCTAssertNotNil(appState.sleepTimerEndDate)
 
-        // Cancel the timer
         appState.cancelSleepTimer()
 
         XCTAssertFalse(appState.isSleepTimerActive)
@@ -35,7 +35,6 @@ final class AppStateTests: XCTestCase {
     func testSleepTimerSchedulesForTomorrowIfTimeHasPassed() {
         let appState = AppState()
 
-        // Set a time that has already passed today (1 hour ago)
         let calendar = Calendar.current
         let pastTime = calendar.date(byAdding: .hour, value: -1, to: Date())!
 
@@ -44,7 +43,6 @@ final class AppStateTests: XCTestCase {
         XCTAssertTrue(appState.isSleepTimerActive)
         XCTAssertNotNil(appState.sleepTimerEndDate)
 
-        // The scheduled time should be in the future (tomorrow)
         if let endDate = appState.sleepTimerEndDate {
             XCTAssertTrue(endDate > Date())
         }
@@ -70,11 +68,8 @@ final class AppStateTests: XCTestCase {
 
         XCTAssertFalse(appState.isPlaying)
 
-        // Toggle should attempt to play (may not actually play without network)
         appState.togglePlayback()
-        // Can't assert isPlaying true because it depends on network/stream
 
-        // Toggle again should pause
         appState.togglePlayback()
         XCTAssertFalse(appState.isPlaying)
     }
@@ -83,7 +78,6 @@ final class AppStateTests: XCTestCase {
         let appState = AppState()
 
         appState.play()
-        // Play initiates loading, actual playback depends on network
 
         appState.pause()
         XCTAssertFalse(appState.isPlaying)
@@ -93,11 +87,9 @@ final class AppStateTests: XCTestCase {
     func testCurrentStation() {
         let appState = AppState()
 
-        // Get current station
         let initialStation = appState.currentStation
         XCTAssertNotNil(initialStation)
 
-        // Set a different station
         let newStation = Station.kamakuraFM
         appState.currentStation = newStation
         XCTAssertEqual(appState.currentStation, newStation)
@@ -106,11 +98,9 @@ final class AppStateTests: XCTestCase {
     func testNextStation() {
         let appState = AppState()
 
-        // Set to first station
         appState.currentStation = Station.allStations[0]
         let firstStation = appState.currentStation
 
-        // Go to next
         appState.nextStation()
         XCTAssertNotEqual(appState.currentStation, firstStation)
         XCTAssertEqual(appState.currentStation, Station.allStations[1])
@@ -119,10 +109,8 @@ final class AppStateTests: XCTestCase {
     func testPreviousStation() {
         let appState = AppState()
 
-        // Set to second station
         appState.currentStation = Station.allStations[1]
 
-        // Go to previous
         appState.previousStation()
         XCTAssertEqual(appState.currentStation, Station.allStations[0])
     }
@@ -130,10 +118,8 @@ final class AppStateTests: XCTestCase {
     func testNextStationWrapsAround() {
         let appState = AppState()
 
-        // Set to last station
         appState.currentStation = Station.allStations.last!
 
-        // Go to next should wrap to first
         appState.nextStation()
         XCTAssertEqual(appState.currentStation, Station.allStations[0])
     }
@@ -141,10 +127,8 @@ final class AppStateTests: XCTestCase {
     func testPreviousStationWrapsAround() {
         let appState = AppState()
 
-        // Set to first station
         appState.currentStation = Station.allStations[0]
 
-        // Go to previous should wrap to last
         appState.previousStation()
         XCTAssertEqual(appState.currentStation, Station.allStations.last!)
     }
@@ -152,7 +136,6 @@ final class AppStateTests: XCTestCase {
     func testSignalQuality() {
         let appState = AppState()
 
-        // When not playing, signal quality should be none
         XCTAssertEqual(appState.signalQuality, .none)
     }
 
@@ -160,12 +143,10 @@ final class AppStateTests: XCTestCase {
         let appState = AppState()
         let calendar = Calendar.current
 
-        // Set first timer
         let time1 = calendar.date(byAdding: .hour, value: 1, to: Date())!
         appState.setSleepTimer(at: time1)
         let endDate1 = appState.sleepTimerEndDate
 
-        // Set second timer - should replace the first
         let time2 = calendar.date(byAdding: .hour, value: 2, to: Date())!
         appState.setSleepTimer(at: time2)
         let endDate2 = appState.sleepTimerEndDate
@@ -180,7 +161,6 @@ final class AppStateTests: XCTestCase {
         let appState = AppState()
         let calendar = Calendar.current
 
-        // Set timer for 30 minutes from now
         let futureTime = calendar.date(byAdding: .minute, value: 30, to: Date())!
         appState.setSleepTimer(at: futureTime)
 
@@ -189,7 +169,6 @@ final class AppStateTests: XCTestCase {
 
         if let endDate = appState.sleepTimerEndDate {
             XCTAssertTrue(endDate > Date())
-            // Should be approximately 30 minutes from now
             let diff = endDate.timeIntervalSinceNow
             XCTAssertGreaterThan(diff, 29 * 60)
             XCTAssertLessThan(diff, 31 * 60)
@@ -201,7 +180,6 @@ final class AppStateTests: XCTestCase {
     func testPlayPauseCycle() {
         let appState = AppState()
 
-        // Multiple cycles
         for _ in 0..<3 {
             appState.play()
             appState.pause()
@@ -215,14 +193,12 @@ final class AppStateTests: XCTestCase {
         let appState = AppState()
         let stationCount = Station.allStations.count
 
-        // Cycle through all stations using next
         appState.currentStation = Station.allStations[0]
         for i in 1..<stationCount {
             appState.nextStation()
             XCTAssertEqual(appState.currentStation, Station.allStations[i])
         }
 
-        // One more should wrap to first
         appState.nextStation()
         XCTAssertEqual(appState.currentStation, Station.allStations[0])
     }
@@ -231,18 +207,14 @@ final class AppStateTests: XCTestCase {
         let appState = AppState()
         let calendar = Calendar.current
 
-        // Set a timer far in the future
         let futureTime = calendar.date(byAdding: .hour, value: 2, to: Date())!
         appState.setSleepTimer(at: futureTime)
 
-        // Post wake notification - should call checkSleepTimer() which should NOT fire
-        // since the timer end date is still in the future
         NSWorkspace.shared.notificationCenter.post(
             name: NSWorkspace.didWakeNotification,
             object: nil
         )
 
-        // Timer should still be active since end date hasn't passed
         XCTAssertTrue(appState.isSleepTimerActive)
 
         appState.cancelSleepTimer()
@@ -251,10 +223,8 @@ final class AppStateTests: XCTestCase {
     func testWakeNotificationWithNoTimer() {
         let appState = AppState()
 
-        // No timer set
         XCTAssertFalse(appState.isSleepTimerActive)
 
-        // Post wake notification - checkSleepTimer guard should early return
         NSWorkspace.shared.notificationCenter.post(
             name: NSWorkspace.didWakeNotification,
             object: nil
@@ -263,4 +233,17 @@ final class AppStateTests: XCTestCase {
         XCTAssertFalse(appState.isSleepTimerActive)
     }
 
+    // MARK: - Reconnection Forwarding Tests
+
+    func testIsReconnectingInitiallyFalse() {
+        let appState = AppState()
+        XCTAssertFalse(appState.isReconnecting)
+    }
+
+    func testPauseClearsReconnecting() {
+        let appState = AppState()
+        appState.play()
+        appState.pause()
+        XCTAssertFalse(appState.isReconnecting)
+    }
 }

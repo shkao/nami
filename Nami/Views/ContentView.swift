@@ -1,9 +1,11 @@
+import ServiceManagement
 import SwiftUI
 
 struct ContentView: View {
     @Bindable var appState: AppState
     @State private var showTimePicker = false
     @State private var selectedTime = Calendar.current.date(from: DateComponents(hour: 22, minute: 30)) ?? Date()
+    @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
     private var signalIndicator: some View {
         signalBars(for: appState.isPlaying ? appState.signalQuality : .none)
@@ -18,6 +20,17 @@ struct ContentView: View {
             }
         }
         .frame(width: 10, height: 7, alignment: .bottom)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Signal \(signalLabel(for: quality))")
+    }
+
+    private func signalLabel(for quality: SignalQuality) -> String {
+        switch quality {
+        case .excellent: "excellent"
+        case .good: "good"
+        case .poor: "poor"
+        case .none: "none"
+        }
     }
 
     private func signalColor(for bar: Int, quality: SignalQuality) -> Color {
@@ -48,6 +61,8 @@ struct ContentView: View {
                             .padding(.leading, 2)
                     }
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(appState.currentStation.frequency) megahertz")
 
                 // Station selector
                 Menu {
@@ -74,13 +89,35 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Station: \(appState.currentStation.name)")
             }
             .padding(.top, 14)
             .padding(.bottom, 12)
 
+            // Error / reconnecting banner
+            if let error = appState.errorMessage {
+                HStack(spacing: 4) {
+                    if appState.isReconnecting {
+                        ProgressView()
+                            .scaleEffect(0.4)
+                            .frame(width: 10, height: 10)
+                        Text("Reconnecting...")
+                            .font(.system(size: 9))
+                    } else {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 8))
+                        Text(error)
+                            .font(.system(size: 9))
+                            .lineLimit(2)
+                    }
+                }
+                .foregroundColor(appState.isReconnecting ? .secondary : .red)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+            }
+
             // Controls
             HStack(spacing: 8) {
-                // Previous
                 Button(action: { appState.previousStation() }) {
                     Image(systemName: "backward.fill")
                         .font(.system(size: 10))
@@ -88,8 +125,8 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
+                .accessibilityLabel("Previous station")
 
-                // Play/Pause
                 Button(action: { appState.togglePlayback() }) {
                     Group {
                         if appState.isLoading {
@@ -106,8 +143,8 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(appState.isLoading)
+                .accessibilityLabel(appState.isPlaying ? "Pause" : "Play")
 
-                // Next
                 Button(action: { appState.nextStation() }) {
                     Image(systemName: "forward.fill")
                         .font(.system(size: 10))
@@ -115,6 +152,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
+                .accessibilityLabel("Next station")
             }
             .padding(.bottom, 8)
 
@@ -132,6 +170,7 @@ struct ContentView: View {
                     in: 0...1
                 )
                 .controlSize(.mini)
+                .accessibilityLabel("Volume")
 
                 Image(systemName: "speaker.wave.3.fill")
                     .font(.system(size: 8))
@@ -164,6 +203,7 @@ struct ContentView: View {
                     .foregroundStyle(appState.isSleepTimerActive ? .primary : .secondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(appState.isSleepTimerActive ? "Sleep timer active" : "Set sleep timer")
 
                 if showTimePicker {
                     HStack(spacing: 8) {
@@ -197,13 +237,38 @@ struct ContentView: View {
             }
             .padding(.bottom, 12)
 
-            // Quit
-            Button("Quit") {
-                NSApplication.shared.terminate(nil)
+            // Footer controls
+            HStack(spacing: 12) {
+                Toggle(isOn: $launchAtLogin) {
+                    Image(systemName: "sunrise")
+                        .font(.system(size: 9))
+                }
+                .toggleStyle(.checkbox)
+                .controlSize(.mini)
+                .foregroundStyle(.quaternary)
+                .accessibilityLabel("Launch at login")
+                .onChange(of: launchAtLogin) { _, enabled in
+                    do {
+                        if enabled {
+                            try SMAppService.mainApp.register()
+                        } else {
+                            try SMAppService.mainApp.unregister()
+                        }
+                    } catch {
+                        launchAtLogin = !enabled
+                    }
+                }
+
+                Spacer()
+
+                Button("Quit") {
+                    NSApplication.shared.terminate(nil)
+                }
+                .font(.system(size: 10))
+                .buttonStyle(.plain)
+                .foregroundStyle(.quaternary)
             }
-            .font(.system(size: 10))
-            .buttonStyle(.plain)
-            .foregroundStyle(.quaternary)
+            .padding(.horizontal, 16)
             .padding(.bottom, 10)
         }
         .frame(width: 200)

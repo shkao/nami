@@ -1,21 +1,27 @@
 import Foundation
+import os
 import SwiftUI
 
+private let logger = Logger(subsystem: "com.nami.app", category: "AppState")
+
+@MainActor
 @Observable
 final class AppState {
     private let radioPlayer = RadioPlayer()
     private var sleepTimer: Timer?
-    private var wakeObserver: Any?
+    @ObservationIgnored
+    nonisolated(unsafe) private var wakeObserver: Any?
     private(set) var sleepTimerEndDate: Date?
 
     init() {
-        // Re-check sleep timer when Mac wakes from sleep
         wakeObserver = NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didWakeNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.checkSleepTimer()
+            Task { @MainActor [weak self] in
+                self?.handleWake()
+            }
         }
     }
 
@@ -25,9 +31,15 @@ final class AppState {
         }
     }
 
+    private func handleWake() {
+        checkSleepTimer()
+        radioPlayer.handleWake()
+    }
+
     private func checkSleepTimer() {
         guard let endDate = sleepTimerEndDate else { return }
         if Date() >= endDate {
+            logger.info("Sleep timer expired during sleep, stopping playback")
             sleepTimerFired()
         }
     }
@@ -51,6 +63,10 @@ final class AppState {
 
     var isLoading: Bool {
         radioPlayer.isLoading
+    }
+
+    var isReconnecting: Bool {
+        radioPlayer.isReconnecting
     }
 
     var signalQuality: SignalQuality {
@@ -101,7 +117,6 @@ final class AppState {
         let hour = calendar.component(.hour, from: targetTime)
         let minute = calendar.component(.minute, from: targetTime)
 
-        // Create today's date with the selected hour/minute
         var components = calendar.dateComponents([.year, .month, .day], from: Date())
         components.hour = hour
         components.minute = minute
@@ -109,16 +124,18 @@ final class AppState {
 
         var fireDate = calendar.date(from: components) ?? targetTime
 
-        // If the time is in the past, schedule for tomorrow
         if fireDate <= Date() {
             fireDate = calendar.date(byAdding: .day, value: 1, to: fireDate) ?? fireDate
         }
 
         sleepTimerEndDate = fireDate
+        logger.info("Sleep timer set for \(fireDate, privacy: .public)")
 
         let interval = fireDate.timeIntervalSinceNow
         sleepTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
-            self?.sleepTimerFired()
+            Task { @MainActor [weak self] in
+                self?.sleepTimerFired()
+            }
         }
     }
 
@@ -132,5 +149,6 @@ final class AppState {
         sleepTimerEndDate = nil
         sleepTimer = nil
         pause()
+        logger.info("Sleep timer fired, playback stopped")
     }
 }
