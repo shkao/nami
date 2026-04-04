@@ -47,12 +47,12 @@ Nami tunes into five community FM stations along Japan's Shonan coast and greate
 ```mermaid
 graph TB
     subgraph macOS["macOS Menu Bar"]
-        SI[NSStatusItem<br/>waveform icon]
+        SI["NSStatusItem (waveform icon)"]
     end
 
     subgraph App["NamiApp.swift"]
-        AD[AppDelegate<br/>@MainActor]
-        PO[NSPopover<br/>200x320]
+        AD["AppDelegate @MainActor"]
+        PO["NSPopover 200x320"]
     end
 
     subgraph View["ContentView.swift"]
@@ -65,18 +65,18 @@ graph TB
         LL[Launch at Login]
     end
 
-    subgraph State["AppState.swift<br/>@Observable @MainActor"]
+    subgraph State["AppState.swift @Observable"]
         SF[Station Forwarding]
         TM[Timer Management]
         WK[Wake Handler]
     end
 
-    subgraph Audio["RadioPlayer.swift<br/>@Observable @MainActor"]
-        AP[AVPlayer + AVPlayerItem]
-        KVO[KVO Observers<br/>status / buffer / stall]
-        QM[Quality Monitor<br/>2s timer]
-        RC[Auto-Reconnect<br/>exp. backoff, 5 retries]
-        NM[NWPathMonitor<br/>network reachability]
+    subgraph Audio["RadioPlayer.swift @Observable"]
+        AP["AVPlayer + AVPlayerItem"]
+        KVO["KVO Observers (status, buffer, stall)"]
+        QM["Quality Monitor (2s timer)"]
+        RC["Auto-Reconnect (exp. backoff)"]
+        NM["NWPathMonitor (reachability)"]
     end
 
     subgraph Persistence["UserDefaults"]
