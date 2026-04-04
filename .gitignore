@@ -10,15 +10,6 @@ xcuserdata/
 *.swp
 *~.nib
 
-# CocoaPods
-Pods/
-Podfile.lock
-
-# Swift Package Manager
-.build/
-Package.resolved
-.swiftpm/
-
 # Archives
 *.xcarchive
 *.xcresult

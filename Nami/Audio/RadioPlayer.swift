@@ -42,6 +42,12 @@ final class RadioPlayer {
     nonisolated(unsafe) private var retryTask: Task<Void, Never>?
     private static let maxRetries = 5
     private static let baseRetryDelay: TimeInterval = 2.0
+    private static let qualityMonitoringInterval: TimeInterval = 2.0
+    private static let highBitrateThreshold: Double = 128_000
+    private static let mediumBitrateThreshold: Double = 64_000
+    private static let excellentScoreThreshold = 5
+    private static let goodScoreThreshold = 3
+    private static let maxStallPenalty = 2
 
     @ObservationIgnored
     @AppStorage("volume") private var storedVolume: Double = 0.5
@@ -188,7 +194,7 @@ final class RadioPlayer {
     // MARK: - Quality Monitoring
 
     private func startQualityMonitoring() {
-        let timer = Timer(timeInterval: 2.0, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: Self.qualityMonitoringInterval, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.checkAccessLog()
                 self?.updateSignalQuality()
@@ -247,21 +253,21 @@ final class RadioPlayer {
         let bitrateScore: Int
         if observedBitrate <= 0 {
             bitrateScore = 1
-        } else if observedBitrate >= 128_000 {
+        } else if observedBitrate >= Self.highBitrateThreshold {
             bitrateScore = 3
-        } else if observedBitrate >= 64_000 {
+        } else if observedBitrate >= Self.mediumBitrateThreshold {
             bitrateScore = 2
         } else {
             bitrateScore = 1
         }
 
-        let stallPenalty = min(stallCount, 2)
+        let stallPenalty = min(stallCount, Self.maxStallPenalty)
         let totalScore = bufferScore + bitrateScore - stallPenalty
 
         let newQuality: SignalQuality
-        if totalScore >= 5 {
+        if totalScore >= Self.excellentScoreThreshold {
             newQuality = .excellent
-        } else if totalScore >= 3 {
+        } else if totalScore >= Self.goodScoreThreshold {
             newQuality = .good
         } else {
             newQuality = .poor

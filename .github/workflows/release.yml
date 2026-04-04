@@ -19,12 +19,6 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
-      - name: Install xcodeproj gem
-        run: gem install xcodeproj
-
-      - name: Setup test target
-        run: ruby scripts/add_test_target.rb
-
       - name: Run tests
         run: |
           xcodebuild test \

@@ -4,7 +4,9 @@ import SwiftUI
 struct ContentView: View {
     @Bindable var appState: AppState
     @State private var showTimePicker = false
-    @State private var selectedTime = Calendar.current.date(from: DateComponents(hour: 22, minute: 30)) ?? Date()
+    @AppStorage("sleepTimerHour") private var sleepTimerHour = 22
+    @AppStorage("sleepTimerMinute") private var sleepTimerMinute = 30
+    @State private var selectedTime = Date()
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
     private func signalBars(for quality: SignalQuality) -> some View {
@@ -86,6 +88,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Station: \(appState.currentStation.name)")
+                .help("Select station")
             }
             .padding(.top, 14)
             .padding(.bottom, 12)
@@ -122,6 +125,7 @@ struct ContentView: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
                 .accessibilityLabel("Previous station")
+                .help("Previous station")
 
                 Button(action: { appState.togglePlayback() }) {
                     Group {
@@ -140,6 +144,7 @@ struct ContentView: View {
                 .buttonStyle(.plain)
                 .disabled(appState.isLoading)
                 .accessibilityLabel(appState.isPlaying ? "Pause" : "Play")
+                .help(appState.isPlaying ? "Pause" : "Play")
 
                 Button(action: { appState.nextStation() }) {
                     Image(systemName: "forward.fill")
@@ -149,6 +154,7 @@ struct ContentView: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
                 .accessibilityLabel("Next station")
+                .help("Next station")
             }
             .padding(.bottom, 8)
 
@@ -167,6 +173,7 @@ struct ContentView: View {
                 )
                 .controlSize(.mini)
                 .accessibilityLabel("Volume")
+                .help("Volume")
 
                 Image(systemName: "speaker.wave.3.fill")
                     .font(.system(size: 8))
@@ -200,6 +207,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(appState.isSleepTimerActive ? "Sleep timer active" : "Set sleep timer")
+                .help("Sleep timer")
 
                 if showTimePicker {
                     HStack(spacing: 8) {
@@ -213,6 +221,9 @@ struct ContentView: View {
                         .frame(width: 70)
 
                         Button(appState.isSleepTimerActive ? "Update" : "Set") {
+                            let calendar = Calendar.current
+                            sleepTimerHour = calendar.component(.hour, from: selectedTime)
+                            sleepTimerMinute = calendar.component(.minute, from: selectedTime)
                             appState.setSleepTimer(at: selectedTime)
                             showTimePicker = false
                         }
@@ -243,6 +254,7 @@ struct ContentView: View {
                 .controlSize(.mini)
                 .foregroundStyle(.quaternary)
                 .accessibilityLabel("Launch at login")
+                .help("Launch at login")
                 .onChange(of: launchAtLogin) { _, enabled in
                     do {
                         if enabled {
@@ -263,11 +275,15 @@ struct ContentView: View {
                 .font(.system(size: 10))
                 .buttonStyle(.plain)
                 .foregroundStyle(.quaternary)
+                .help("Quit Nami")
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 10)
         }
         .frame(width: 200)
+        .onAppear {
+            selectedTime = Calendar.current.date(from: DateComponents(hour: sleepTimerHour, minute: sleepTimerMinute)) ?? Date()
+        }
     }
 
 }
