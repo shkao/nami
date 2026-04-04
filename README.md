@@ -45,111 +45,17 @@ Nami tunes into five community FM stations along Japan's Shonan coast and greate
 ## Architecture
 
 ```mermaid
-graph TB
-    subgraph macOS["macOS Menu Bar"]
-        SI["NSStatusItem (waveform icon)"]
-    end
-
-    subgraph App["NamiApp.swift"]
-        AD["AppDelegate @MainActor"]
-        PO["NSPopover 200x320"]
-    end
-
-    subgraph View["ContentView.swift"]
-        FD[Frequency Display]
-        SC[Station Selector]
-        PC[Playback Controls]
-        VL[Volume Slider]
-        ST[Sleep Timer]
-        EB[Error Banner]
-        LL[Launch at Login]
-    end
-
-    subgraph State["AppState.swift @Observable"]
-        SF[Station Forwarding]
-        TM[Timer Management]
-        WK[Wake Handler]
-    end
-
-    subgraph Audio["RadioPlayer.swift @Observable"]
-        AP["AVPlayer + AVPlayerItem"]
-        KVO["KVO Observers (status, buffer, stall)"]
-        QM["Quality Monitor (2s timer)"]
-        RC["Auto-Reconnect (exp. backoff)"]
-        NM["NWPathMonitor (reachability)"]
-    end
-
-    subgraph Persistence["UserDefaults"]
-        VOL["volume"]
-        SID["stationId"]
-    end
-
-    SI --> AD
-    AD --> PO
-    PO --> View
-    View --> State
-    State --> Audio
-    Audio --> AP
-    AP --> KVO
-    KVO --> QM
-    AP -.->|failure| RC
-    NM -.->|network lost| RC
-    RC -.->|retry| AP
-    Audio --> Persistence
-
-    style macOS fill:#1a1a2e,stroke:#16213e,color:#eee
-    style App fill:#16213e,stroke:#0f3460,color:#eee
-    style View fill:#0f3460,stroke:#533483,color:#eee
-    style State fill:#533483,stroke:#e94560,color:#eee
-    style Audio fill:#e94560,stroke:#e94560,color:#fff
-    style Persistence fill:#0f3460,stroke:#533483,color:#eee
+graph LR
+    MB["Menu Bar\nNSStatusItem"] --> AD["AppDelegate\nNSPopover"]
+    AD --> CV["ContentView\nSwiftUI"]
+    CV --> AS["AppState\n@Observable"]
+    AS --> RP["RadioPlayer\n@Observable"]
+    RP --> AV["AVPlayer"]
+    RP --> NW["NWPathMonitor"]
+    RP --> UD["UserDefaults"]
+    AV -.->|failure| RP
+    NW -.->|reconnect| RP
 ```
-
-### Data Flow
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant CV as ContentView
-    participant AS as AppState
-    participant RP as RadioPlayer
-    participant AV as AVPlayer
-    participant NW as NWPathMonitor
-
-    U->>CV: Tap Play
-    CV->>AS: togglePlayback()
-    AS->>RP: play()
-    RP->>RP: startPlayback()
-    RP->>AV: AVPlayer.play()
-    AV-->>RP: KVO: .readyToPlay
-    RP-->>CV: isPlaying = true
-
-    Note over NW,RP: Network drops
-    NW-->>RP: path.status != .satisfied
-    RP->>RP: cleanupPlayer()
-    RP-->>CV: errorMessage, isReconnecting
-
-    Note over NW,RP: Network recovers
-    NW-->>RP: path.status == .satisfied
-    RP->>RP: attemptReconnect()
-    loop Exponential backoff (2s, 4s, 8s...)
-        RP->>RP: startPlayback()
-        RP->>AV: AVPlayer.play()
-        AV-->>RP: KVO: .readyToPlay / .failed
-    end
-```
-
-### Signal Quality Scoring
-
-The signal indicator combines three metrics into a composite score (0-6):
-
-| Metric | Score Range | How |
-|--------|------------|-----|
-| Buffer state | 0-3 | `isPlaybackBufferEmpty` (0), keepUp (2), full (3) |
-| Observed bitrate | 1-3 | <64k (1), 64-128k (2), >128k (3) |
-| Stall penalty | 0-2 | Subtracted from total based on `numberOfStalls` |
-
-Result: 5-6 = excellent, 3-4 = good, 0-2 = poor.
 
 ## Installation
 
