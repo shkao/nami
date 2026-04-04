@@ -1,6 +1,6 @@
 # <img src="assets/app-icon.png" width="32"> Nami (Wave)
 
-A lightweight macOS menu bar app for streaming Japanese regional FM radio stations.
+A lightweight macOS menu bar app for streaming Japanese regional FM radio stations. Zero dependencies, ~30MB memory, lives entirely in your menu bar.
 
 [![CI](https://github.com/shkao/Nami/actions/workflows/ci.yml/badge.svg)](https://github.com/shkao/Nami/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/shkao/Nami/graph/badge.svg?token=vCGPutTGKB)](https://codecov.io/gh/shkao/Nami)
@@ -14,25 +14,142 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
   <img src="assets/screenshot-stations.png" alt="Station Selection" width="220" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin: 8px;">
 </p>
 
+## About
+
+Nami tunes into five community FM stations along Japan's Shonan coast and greater Tokyo area. It sits in your menu bar, plays HLS/Icecast streams through AVPlayer, and gets out of the way. Built with SwiftUI and zero external dependencies.
+
+**Why these stations?** Community FM (`komyuniti efuemu`) stations are hyper-local, volunteer-run, and carry programming you won't find on major networks: surf reports from Shonan, temple bells from Kamakura, neighborhood event listings from Chofu.
+
 ## Features
 
-- Stream Japanese regional FM radio stations from the menu bar
-- Real-time signal quality indicator
-- Volume control with persistence
-- Quick station switching with previous/next buttons
+- Stream 5 Japanese regional FM stations from the menu bar
+- Real-time signal quality indicator (bitrate + buffer + stall scoring)
+- Auto-reconnect with exponential backoff on stream failure or network loss
+- Network reachability monitoring with automatic recovery
+- Wake-from-sleep stream re-establishment
 - Sleep timer to auto-stop playback at a specific time
-- Remembers your last station and volume settings
-- Minimal resource usage (~30MB memory)
+- Launch-at-login toggle
+- Volume and station persistence across sessions
+- Full VoiceOver accessibility
 
 ## Stations
 
-| Station         | Frequency | Location |
-| --------------- | --------- | -------- |
-| FM Blue Shonan  | 78.5 MHz  | Yokosuka |
-| Shonan Beach FM | 78.9 MHz  | Shonan   |
-| Kamakura FM     | 82.8 MHz  | Kamakura |
-| Chofu FM        | 83.8 MHz  | Tokyo    |
-| FM Salus        | 84.1 MHz  | Yokohama |
+| Station         | Frequency | Location | Stream |
+| --------------- | --------- | -------- | ------ |
+| FM Blue Shonan  | 78.5 MHz  | Yokosuka | HLS    |
+| Shonan Beach FM | 78.9 MHz  | Shonan   | Icecast |
+| Kamakura FM     | 82.8 MHz  | Kamakura | HLS    |
+| Chofu FM        | 83.8 MHz  | Tokyo    | HLS    |
+| FM Salus        | 84.1 MHz  | Yokohama | HLS    |
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph macOS["macOS Menu Bar"]
+        SI[NSStatusItem<br/>waveform icon]
+    end
+
+    subgraph App["NamiApp.swift"]
+        AD[AppDelegate<br/>@MainActor]
+        PO[NSPopover<br/>200x320]
+    end
+
+    subgraph View["ContentView.swift"]
+        FD[Frequency Display]
+        SC[Station Selector]
+        PC[Playback Controls]
+        VL[Volume Slider]
+        ST[Sleep Timer]
+        EB[Error Banner]
+        LL[Launch at Login]
+    end
+
+    subgraph State["AppState.swift<br/>@Observable @MainActor"]
+        SF[Station Forwarding]
+        TM[Timer Management]
+        WK[Wake Handler]
+    end
+
+    subgraph Audio["RadioPlayer.swift<br/>@Observable @MainActor"]
+        AP[AVPlayer + AVPlayerItem]
+        KVO[KVO Observers<br/>status / buffer / stall]
+        QM[Quality Monitor<br/>2s timer]
+        RC[Auto-Reconnect<br/>exp. backoff, 5 retries]
+        NM[NWPathMonitor<br/>network reachability]
+    end
+
+    subgraph Persistence["UserDefaults"]
+        VOL["volume"]
+        SID["stationId"]
+    end
+
+    SI --> AD
+    AD --> PO
+    PO --> View
+    View --> State
+    State --> Audio
+    Audio --> AP
+    AP --> KVO
+    KVO --> QM
+    AP -.->|failure| RC
+    NM -.->|network lost| RC
+    RC -.->|retry| AP
+    Audio --> Persistence
+
+    style macOS fill:#1a1a2e,stroke:#16213e,color:#eee
+    style App fill:#16213e,stroke:#0f3460,color:#eee
+    style View fill:#0f3460,stroke:#533483,color:#eee
+    style State fill:#533483,stroke:#e94560,color:#eee
+    style Audio fill:#e94560,stroke:#e94560,color:#fff
+    style Persistence fill:#0f3460,stroke:#533483,color:#eee
+```
+
+### Data Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CV as ContentView
+    participant AS as AppState
+    participant RP as RadioPlayer
+    participant AV as AVPlayer
+    participant NW as NWPathMonitor
+
+    U->>CV: Tap Play
+    CV->>AS: togglePlayback()
+    AS->>RP: play()
+    RP->>RP: startPlayback()
+    RP->>AV: AVPlayer.play()
+    AV-->>RP: KVO: .readyToPlay
+    RP-->>CV: isPlaying = true
+
+    Note over NW,RP: Network drops
+    NW-->>RP: path.status != .satisfied
+    RP->>RP: cleanupPlayer()
+    RP-->>CV: errorMessage, isReconnecting
+
+    Note over NW,RP: Network recovers
+    NW-->>RP: path.status == .satisfied
+    RP->>RP: attemptReconnect()
+    loop Exponential backoff (2s, 4s, 8s...)
+        RP->>RP: startPlayback()
+        RP->>AV: AVPlayer.play()
+        AV-->>RP: KVO: .readyToPlay / .failed
+    end
+```
+
+### Signal Quality Scoring
+
+The signal indicator combines three metrics into a composite score (0-6):
+
+| Metric | Score Range | How |
+|--------|------------|-----|
+| Buffer state | 0-3 | `isPlaybackBufferEmpty` (0), keepUp (2), full (3) |
+| Observed bitrate | 1-3 | <64k (1), 64-128k (2), >128k (3) |
+| Stall penalty | 0-2 | Subtracted from total based on `numberOfStalls` |
+
+Result: 5-6 = excellent, 3-4 = good, 0-2 = poor.
 
 ## Installation
 
@@ -84,10 +201,11 @@ Or open `Nami.xcodeproj` in Xcode and press `Cmd+R` to build and run.
 
 1. Click the waveform icon in the menu bar
 2. Click the play button to start streaming
-3. Use the dropdown to select a station, or use ⏮/⏭ to switch
+3. Use the dropdown to select a station, or use prev/next to switch
 4. Adjust volume with the slider
 5. Set a sleep timer to auto-stop at a specific time
-6. Click "Quit" to exit
+6. Toggle the sunrise icon to launch Nami at login
+7. Click "Quit" to exit
 
 ### Sleep Timer
 
@@ -104,9 +222,13 @@ Click "Sleep Timer" to set a time for the radio to automatically stop:
 
 The bars next to the station name show connection quality:
 
-- ▂▄▆ (3 green bars): Excellent connection
-- ▂▄░ (2 green bars): Good connection
-- ▂░░ (1 orange bar): Poor connection (may buffer)
+- 3 green bars: Excellent connection
+- 2 green bars: Good connection
+- 1 orange bar: Poor connection (may buffer)
+
+### Auto-Reconnect
+
+When a stream fails or the network drops, Nami automatically retries with increasing delays (2s, 4s, 8s, 16s, 32s). A "Reconnecting..." banner appears during retries. If all 5 attempts fail, tap play to try again manually.
 
 ## Configuration
 
@@ -114,28 +236,32 @@ Settings are automatically saved:
 
 - **Volume**: Persisted between sessions
 - **Last Station**: Automatically restored on launch
+- **Launch at Login**: Toggled via the sunrise icon
 
 Settings are stored in UserDefaults (`com.nami.app`).
 
-## Architecture
+## Project Structure
 
 ```
 Nami/
 ├── App/
-│   └── NamiApp.swift         # App entry point with MenuBarExtra
+│   └── NamiApp.swift         # App entry point, AppDelegate, NSPopover
 ├── Audio/
-│   └── RadioPlayer.swift     # AVPlayer wrapper, stream handling
+│   └── RadioPlayer.swift     # AVPlayer wrapper, reconnect, network monitor
 ├── Models/
-│   ├── AppState.swift        # Observable app state, sleep timer
-│   └── Station.swift         # Station definitions
+│   ├── AppState.swift        # Observable state hub, sleep timer, wake handler
+│   └── Station.swift         # Station definitions (5 stations)
 ├── Views/
-│   └── ContentView.swift     # Main popover UI
+│   └── ContentView.swift     # SwiftUI popover UI
 └── Resources/
     ├── Assets.xcassets       # App icons
-    └── Info.plist            # App configuration (LSUIElement=YES)
+    └── Info.plist            # LSUIElement=YES (menu bar only)
 
 NamiTests/
-└── AppStateTests.swift       # Unit tests for AppState
+├── AppStateTests.swift       # 22 tests
+├── RadioPlayerTests.swift    # 21 tests
+├── StationTests.swift        # 7 tests
+└── NamiAppTests.swift        # 6 tests
 ```
 
 ## Development
@@ -172,15 +298,16 @@ xcodebuild test -scheme Nami -destination 'platform=macOS' -enableCodeCoverage Y
 Releases are automatically built by GitHub Actions when you push a version tag:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.1.0
+git push origin v1.1.0
 ```
 
 This will:
 
-1. Build the app in Release configuration
-2. Create a ZIP archive
-3. Create a GitHub Release with the artifact
+1. Run the full test suite
+2. Build the app in Release configuration with version injected from the tag
+3. Create a ZIP archive
+4. Create a GitHub Release with the artifact
 
 ## Troubleshooting
 
@@ -196,7 +323,7 @@ For unsigned builds, macOS Gatekeeper may block the app:
 
 **Method 2: System Settings**
 
-1. Open System Settings → Privacy & Security
+1. Open System Settings, then Privacy & Security
 2. Scroll down to find "Nami was blocked"
 3. Click "Open Anyway"
 
@@ -219,6 +346,7 @@ xattr -d com.apple.quarantine /Applications/Nami.app
 - Check your internet connection
 - Try a different station (some may have better servers)
 - The signal quality indicator shows real-time connection status
+- Nami will auto-reconnect if the stream drops
 
 ## Future Plans
 
