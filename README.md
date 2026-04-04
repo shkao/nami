@@ -164,10 +164,10 @@ Nami/
     └── Info.plist            # LSUIElement=YES (menu bar only)
 
 NamiTests/
-├── AppStateTests.swift       # 22 tests
-├── RadioPlayerTests.swift    # 21 tests
+├── AppStateTests.swift       # 20 tests
+├── RadioPlayerTests.swift    # 22 tests
 ├── StationTests.swift        # 7 tests
-└── NamiAppTests.swift        # 6 tests
+└── NamiAppTests.swift        # 7 tests
 ```
 
 ## Development
