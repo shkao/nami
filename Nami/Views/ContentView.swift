@@ -7,10 +7,6 @@ struct ContentView: View {
     @State private var selectedTime = Calendar.current.date(from: DateComponents(hour: 22, minute: 30)) ?? Date()
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
-    private var signalIndicator: some View {
-        signalBars(for: appState.isPlaying ? appState.signalQuality : .none)
-    }
-
     private func signalBars(for quality: SignalQuality) -> some View {
         HStack(spacing: 1) {
             ForEach(0..<3) { index in
@@ -79,7 +75,7 @@ struct ContentView: View {
                     }
                 } label: {
                     HStack(spacing: 3) {
-                        signalIndicator
+                        signalBars(for: appState.isPlaying ? appState.signalQuality : .none)
                         Text(appState.currentStation.name)
                             .font(.system(size: 11))
                         Image(systemName: "chevron.up.chevron.down")
