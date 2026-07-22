@@ -11,44 +11,49 @@ enum Theme {
     static let coral = Color(red: 216 / 255, green: 160 / 255, blue: 140 / 255)  // #D8A08C (muted terracotta)
 }
 
-/// A field of parallel contour lines flowing as one body of water, the calm
-/// signature of Mori Yuzan's Hamonshu. Lines bunch and swell toward the middle;
-/// while `playing` the current drifts from the timeline, and it settles when
-/// paused. One layer, sitting behind the whole popover.
-struct DriftingCurrent: View {
+/// Rolling ocean swells across the lower popover. Each swell has its own
+/// wavelength, speed, and height, so the crests overlap and cross like real
+/// waves rather than sitting parallel like contour lines. Front swells are
+/// bolder and lower, back swells fainter and higher. They roll while `playing`
+/// and settle when paused. Every term stays Double so it type-checks fast.
+struct OceanSwells: View {
     var playing: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private let lineCount = 7
+    private let swellCount = 4
 
     var body: some View {
         TimelineView(.animation(paused: !playing || reduceMotion)) { timeline in
-            let t = playing ? timeline.date.timeIntervalSinceReferenceDate : 0
+            let t: Double = playing ? timeline.date.timeIntervalSinceReferenceDate : 0
             Canvas { ctx, size in
-                // The current sits in the lower portion so the frequency stays clear.
-                let top = size.height * 0.34
-                let bottom = size.height * 0.98
-                let gap = (bottom - top) / CGFloat(lineCount - 1)
-                for i in 0..<lineCount {
-                    let frac = Double(i) / Double(lineCount - 1)
-                    let y0 = top + CGFloat(i) * gap
-                    let env = 0.6 + 0.9 * sin(frac * .pi)
+                let width = Double(size.width)
+                let height = Double(size.height)
+                for s in 0..<swellCount {
+                    let f = Double(s) / Double(swellCount - 1)  // 0 back, 1 front
+                    let baseY = height * (0.50 + 0.42 * f)
+                    let amp = height * (0.045 + 0.06 * f)
+                    let wavelength = 1.6 + Double(s) * 0.8
+                    let drift = t * (0.3 + 0.28 * f) + Double(s) * 1.7
                     var path = Path()
-                    var x: CGFloat = 0
-                    while x <= size.width {
-                        let u = Double(x / size.width)
-                        let y = y0
-                            + CGFloat(sin(u * .pi * 3 + t * 0.8 + Double(i) * 0.28) * Double(gap) * 0.75 * env)
-                            + CGFloat(sin(u * .pi * 6 - t * 0.5 + Double(i) * 0.5) * Double(gap) * 0.26 * env)
-                        if x == 0 {
-                            path.move(to: CGPoint(x: x, y: y))
+                    var px: Double = 0
+                    while px <= width {
+                        let u = px / width
+                        let raw = sin(u * .pi * wavelength + drift)
+                        let crest = raw * abs(raw)  // peaked crests, flatter troughs
+                        let point = CGPoint(x: px, y: baseY - crest * amp)
+                        if px == 0 {
+                            path.move(to: point)
                         } else {
-                            path.addLine(to: CGPoint(x: x, y: y))
+                            path.addLine(to: point)
                         }
-                        x += 3
+                        px += 3
                     }
-                    let alpha = 0.05 + 0.12 * sin(frac * .pi)
-                    ctx.stroke(path, with: .color(Theme.seafoam.opacity(alpha)), lineWidth: 0.7)
+                    let alpha = 0.16 + 0.20 * f
+                    ctx.stroke(
+                        path,
+                        with: .color(Theme.seafoam.opacity(alpha)),
+                        style: StrokeStyle(lineWidth: 1.4, lineCap: .round)
+                    )
                 }
             }
         }
@@ -142,19 +147,17 @@ struct ContentView: View {
         .help("Sleep in \(minutes) minutes")
     }
 
-    /// Oversized brush 波 that bleeds off the top-right so the UI reads as
-    /// printed on the artwork. Lives in a background layer so it never drives
-    /// the panel's layout; a radial fade toward the lower-left protects text.
     var body: some View {
         content
             .frame(width: 242)
             .background {
+                // Indigo panel with rolling ocean swells behind the UI.
                 ZStack {
                     LinearGradient(
                         colors: [Theme.indigoTop, Theme.indigoDeep],
                         startPoint: .top, endPoint: .bottom
                     )
-                    DriftingCurrent(playing: appState.isPlaying)
+                    OceanSwells(playing: appState.isPlaying)
                         .allowsHitTesting(false)
                 }
             }
