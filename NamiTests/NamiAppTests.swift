@@ -32,7 +32,7 @@ final class NamiAppTests: XCTestCase {
 
         // Should have created a popover
         XCTAssertNotNil(appDelegate.popover)
-        XCTAssertEqual(appDelegate.popover.contentSize, NSSize(width: 200, height: 320))
+        XCTAssertEqual(appDelegate.popover.contentSize, NSSize(width: 242, height: 340))
         XCTAssertEqual(appDelegate.popover.behavior, .transient)
         XCTAssertTrue(appDelegate.popover.animates)
     }

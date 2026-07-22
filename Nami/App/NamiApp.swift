@@ -1,3 +1,4 @@
+import CoreText
 import SwiftUI
 
 @main
@@ -19,16 +20,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var eventMonitor: Any?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Self.registerBundledFonts()
         setupStatusItem()
         setupPopover()
         setupEventMonitor()
+    }
+
+    /// Registers the bundled Shippori Mincho face for the process so
+    /// `Font.custom("ShipporiMincho-Medium", ...)` resolves at runtime.
+    static func registerBundledFonts() {
+        guard let url = Bundle.main.url(forResource: "ShipporiMincho-Medium", withExtension: "ttf") else { return }
+        CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
     }
 
     func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Nami")
+            button.image = NSImage(named: "MenuBarIcon")
+            button.image?.accessibilityDescription = "Nami"
             button.action = #selector(togglePopover)
             button.target = self
         }
@@ -36,9 +46,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func setupPopover() {
         popover = NSPopover()
-        popover.contentSize = NSSize(width: 200, height: 320)
+        popover.contentSize = NSSize(width: 242, height: 340)
         popover.behavior = .transient
         popover.animates = true
+        popover.appearance = NSAppearance(named: .darkAqua)
         popover.contentViewController = NSHostingController(rootView: ContentView(appState: appState))
     }
 

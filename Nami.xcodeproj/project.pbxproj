@@ -18,6 +18,7 @@
 		A1000001238F00003 /* RadioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001238F00013 /* RadioPlayer.swift */; };
 		A1000001238F00004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001238F00014 /* ContentView.swift */; };
 		A1000001238F00006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000001238F00016 /* Assets.xcassets */; };
+		A1000001238F000F1 /* ShipporiMincho-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1000001238F000F0 /* ShipporiMincho-Medium.ttf */; };
 		A1000001238F00007 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001238F00018 /* Station.swift */; };
 		A2DC05661CA790CFA871C01C /* StationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB7EAE0A30B3CB88A83141E /* StationTests.swift */; };
 		C996733EA9EFA680B868C3C4 /* RadioPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EE1A3BF33D61BC5BDD76AA /* RadioPlayerTests.swift */; };
@@ -64,6 +65,7 @@
 		A1000001238F00013 /* RadioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioPlayer.swift; sourceTree = "<group>"; };
 		A1000001238F00014 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1000001238F00016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1000001238F000F0 /* ShipporiMincho-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ShipporiMincho-Medium.ttf"; sourceTree = "<group>"; };
 		A1000001238F00017 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1000001238F00018 /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		CFE7C2E9FE245B2ACBA788F7 /* AppStateTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 			children = (
 				A1000001238F00016 /* Assets.xcassets */,
 				A1000001238F00017 /* Info.plist */,
+				A1000001238F000F0 /* ShipporiMincho-Medium.ttf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1000001238F00006 /* Assets.xcassets in Resources */,
+				A1000001238F000F1 /* ShipporiMincho-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
