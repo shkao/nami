@@ -4,16 +4,30 @@ struct Station: Identifiable, Equatable {
     let id: String
     let name: String
     let frequency: String
+    let location: String
     let streamURL: URL
 
     var isFrequencyNumeric: Bool {
         Double(frequency) != nil
     }
 
+    var streamType: String {
+        streamURL.path.hasSuffix(".m3u8") ? "HLS" : "Icecast"
+    }
+
+    /// The smartstream CDN behind these stations rejects requests without an
+    /// Origin header, returning 403. Streams served elsewhere need no headers.
+    var streamHTTPHeaders: [String: String]? {
+        streamURL.host == "mtist.as.smartstream.ne.jp"
+            ? ["Origin": "https://listenradio.jp"]
+            : nil
+    }
+
     static let fmBlueShonan = Station(
         id: "blue-shonan",
         name: "FM Blue Shonan",
         frequency: "78.5",
+        location: "Yokosuka",
         streamURL: URL(string: "https://mtist.as.smartstream.ne.jp/30019/livestream/playlist.m3u8")!
     )
 
@@ -21,6 +35,7 @@ struct Station: Identifiable, Equatable {
         id: "shonan",
         name: "Shonan Beach FM",
         frequency: "78.9",
+        location: "Shonan",
         streamURL: URL(string: "https://shonanbeachfm.out.airtime.pro/shonanbeachfm_c")!
     )
 
@@ -28,6 +43,7 @@ struct Station: Identifiable, Equatable {
         id: "kamakura",
         name: "Kamakura FM",
         frequency: "82.8",
+        location: "Kamakura",
         streamURL: URL(string: "https://mtist.as.smartstream.ne.jp/30037/livestream/playlist.m3u8")!
     )
 
@@ -35,6 +51,7 @@ struct Station: Identifiable, Equatable {
         id: "chofu",
         name: "Chofu FM",
         frequency: "83.8",
+        location: "Tokyo",
         streamURL: URL(string: "https://mtist.as.smartstream.ne.jp/30039/livestream/playlist.m3u8")!
     )
 
@@ -42,6 +59,7 @@ struct Station: Identifiable, Equatable {
         id: "salus",
         name: "FM Salus",
         frequency: "84.1",
+        location: "Yokohama",
         streamURL: URL(string: "https://mtist.as.smartstream.ne.jp/30048/livestream/playlist.m3u8")!
     )
 

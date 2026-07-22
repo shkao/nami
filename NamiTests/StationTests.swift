@@ -35,6 +35,17 @@ final class StationTests: XCTestCase {
         }
     }
 
+    func testSmartstreamStationsRequireOriginHeader() {
+        for station in Station.allStations where station.streamURL.host == "mtist.as.smartstream.ne.jp" {
+            XCTAssertEqual(station.streamHTTPHeaders?["Origin"], "https://listenradio.jp",
+                           "\(station.name) needs the listenradio Origin header")
+        }
+    }
+
+    func testNonSmartstreamStationsNeedNoHeaders() {
+        XCTAssertNil(Station.shonanBeachFM.streamHTTPHeaders)
+    }
+
     func testStationFrequencies() {
         XCTAssertEqual(Station.fmBlueShonan.frequency, "78.5")
         XCTAssertEqual(Station.shonanBeachFM.frequency, "78.9")

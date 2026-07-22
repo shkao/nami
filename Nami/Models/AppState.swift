@@ -73,6 +73,10 @@ final class AppState {
         radioPlayer.signalQuality
     }
 
+    var streamBitrate: Double {
+        radioPlayer.observedBitrate
+    }
+
     var currentStation: Station {
         get { radioPlayer.currentStation }
         set { radioPlayer.setStation(newValue) }

@@ -1,0 +1,21 @@
+name: Stream Health
+
+# Community FM streams break without warning (host changes, expiry, new
+# required headers). Probe them on a schedule so breakage surfaces here
+# instead of in a user's menu bar. A red run is the signal; GitHub emails
+# the repo owner when a scheduled run fails.
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # daily at 06:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  check-streams:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Probe every station stream
+        run: ./scripts/check_streams.sh

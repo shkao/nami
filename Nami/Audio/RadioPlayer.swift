@@ -31,8 +31,7 @@ final class RadioPlayer {
     private(set) var errorMessage: String?
     private(set) var signalQuality: SignalQuality = .none
     private(set) var isReconnecting = false
-    @ObservationIgnored
-    private var observedBitrate: Double = 0
+    private(set) var observedBitrate: Double = 0
     @ObservationIgnored
     private var stallCount: Int = 0
     var currentStation: Station
@@ -103,7 +102,14 @@ final class RadioPlayer {
     private func startPlayback() {
         cleanupPlayer()
 
-        playerItem = AVPlayerItem(url: currentStation.streamURL)
+        let assetOptions: [String: Any]
+        if let headers = currentStation.streamHTTPHeaders {
+            assetOptions = ["AVURLAssetHTTPHeaderFieldsKey": headers]
+        } else {
+            assetOptions = [:]
+        }
+        let asset = AVURLAsset(url: currentStation.streamURL, options: assetOptions)
+        playerItem = AVPlayerItem(asset: asset)
         player = AVPlayer(playerItem: playerItem)
         player?.volume = volume
 
