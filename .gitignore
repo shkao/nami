@@ -21,3 +21,6 @@ Nami.zip
 # Playgrounds
 timeline.xctimeline
 playground.xcworkspace
+
+# SwiftPM
+.build/

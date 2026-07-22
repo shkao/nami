@@ -10,15 +10,14 @@ A lightweight macOS menu bar app for streaming Japanese regional FM radio statio
 [![Download](https://img.shields.io/badge/Download-Latest-brightgreen)](../../releases/latest)
 
 <p align="center">
-  <img src="assets/screenshot.png" alt="Nami Player" width="220" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin: 8px;">
-  <img src="assets/screenshot-stations.png" alt="Station Selection" width="220" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin: 8px;">
+  <img src="assets/nami-demo.gif" alt="Nami menu bar player with a drifting Hamonshu wave" width="240" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin: 8px;">
 </p>
 
-## About
+## Why Nami
 
-Nami tunes into five community FM stations along Japan's Shonan coast and greater Tokyo area. It sits in your menu bar, plays HLS/Icecast streams through AVPlayer, and gets out of the way. Built with SwiftUI and zero external dependencies.
+Community FM (`komyuniti efuemu`) stations are hyper-local and volunteer-run: surf reports from Shonan, temple bells from Kamakura, neighborhood listings from Chofu. They are a joy to leave on in the background, but tuning them in outside Japan usually means juggling browser players, and their public streams change hosts or start refusing requests without notice.
 
-**Why these stations?** Community FM (`komyuniti efuemu`) stations are hyper-local, volunteer-run, and carry programming you won't find on major networks: surf reports from Shonan, temple bells from Kamakura, neighborhood event listings from Chofu.
+Nami streams all five from your menu bar through AVPlayer, reconnects itself when a stream drops, and runs a daily health check that catches a dead station before you do. It is built with SwiftUI, has zero external dependencies, and holds around 30 MB of memory.
 
 ## Features
 
@@ -41,6 +40,17 @@ Nami tunes into five community FM stations along Japan's Shonan coast and greate
 | Kamakura FM     | 82.8 MHz  | Kamakura | HLS    |
 | Chofu FM        | 83.8 MHz  | Tokyo    | HLS    |
 | FM Salus        | 84.1 MHz  | Yokohama | HLS    |
+
+## Keeping the streams alive
+
+Community FM streams are fragile: hosts move, URLs expire, and CDNs start demanding new request headers. The smartstream CDN behind four of these stations began returning `403` to requests without an `Origin` header, which would have broken playback with no visible error. Two mechanisms keep Nami ahead of that:
+
+- **Per-station request headers.** Each station carries whatever headers its stream now requires (set in `Station.swift`), so playback survives when a provider tightens its rules.
+- **A daily probe.** `scripts/check_streams.sh` fetches every stream and prints a per-station OK/FAIL table, exiting non-zero on any failure. The [Stream Health](.github/workflows/stream-health.yml) GitHub Action runs it every morning, so a broken stream surfaces as a red build here instead of silence in your menu bar.
+
+```bash
+scripts/check_streams.sh
+```
 
 ## Architecture
 
@@ -105,36 +115,37 @@ Or open `Nami.xcodeproj` in Xcode and press `Cmd+R` to build and run.
 
 ## Usage
 
-1. Click the waveform icon in the menu bar
+1. Click the wave icon in the menu bar
 2. Click the play button to start streaming
-3. Use the dropdown to select a station, or use prev/next to switch
+3. Use the dropdown to select a station (each row shows frequency and location), or use prev/next to switch
 4. Adjust volume with the slider
 5. Set a sleep timer to auto-stop at a specific time
-6. Toggle the sunrise icon to launch Nami at login
+6. Open the Settings menu to toggle Launch at Login
 7. Click "Quit" to exit
 
 ### Sleep Timer
 
 Click "Sleep Timer" to set a time for the radio to automatically stop:
 
-1. Click the moon icon to open the time picker
-2. Set your desired stop time (defaults to 22:30)
-3. Click "Set" to activate
-4. The timer shows "Off at [time]" when active
-5. Click again to modify the timer, then click "Update"
-6. Click "Off" in the picker to cancel
+1. Click the moon icon to open the picker
+2. Pick a preset (15, 30, or 60 min) or set a custom stop time (defaults to 22:30) and click "Set"
+3. The timer shows "Sleep at [time]" when active
+4. Click again to modify the timer, then click "Update"
+5. Click "Off" in the picker to cancel
 
 ### Signal Quality Indicator
 
 The bars next to the station name show connection quality:
 
-- 3 green bars: Excellent connection
-- 2 green bars: Good connection
-- 1 orange bar: Poor connection (may buffer)
+- 3 bars: Excellent connection
+- 2 bars: Good connection
+- 1 coral bar: Poor connection (may buffer); the station name also turns coral
+
+While playing, a status line under the station name shows the live indicator, stream type, and measured bitrate.
 
 ### Auto-Reconnect
 
-When a stream fails or the network drops, Nami automatically retries with increasing delays (2s, 4s, 8s, 16s, 32s). A "Reconnecting..." banner appears during retries. If all 5 attempts fail, tap play to try again manually.
+When a stream fails or the network drops, Nami automatically retries with increasing delays (2s, 4s, 8s, 16s, 32s). The status line shows "Reconnecting…" during retries. If all 5 attempts fail, tap play to try again manually.
 
 ## Configuration
 
@@ -142,7 +153,7 @@ Settings are automatically saved:
 
 - **Volume**: Persisted between sessions
 - **Last Station**: Automatically restored on launch
-- **Launch at Login**: Toggled via the sunrise icon
+- **Launch at Login**: Toggled via the Settings menu
 
 Settings are stored in UserDefaults (`com.nami.app`).
 
@@ -153,20 +164,22 @@ Nami/
 ├── App/
 │   └── NamiApp.swift         # App entry point, AppDelegate, NSPopover
 ├── Audio/
-│   └── RadioPlayer.swift     # AVPlayer wrapper, reconnect, network monitor
+│   └── RadioPlayer.swift     # AVPlayer wrapper, per-station headers, reconnect, network monitor
 ├── Models/
 │   ├── AppState.swift        # Observable state hub, sleep timer, wake handler
 │   └── Station.swift         # Station definitions (5 stations)
 ├── Views/
 │   └── ContentView.swift     # SwiftUI popover UI
 └── Resources/
-    ├── Assets.xcassets       # App icons
+    ├── Assets.xcassets       # App icon, menu bar icon (Hamonshu wave mark)
+    ├── ShipporiMincho-Medium.ttf  # bundled frequency typeface (subset)
+    ├── ShipporiMincho-OFL.txt     # font license (SIL OFL)
     └── Info.plist            # LSUIElement=YES (menu bar only)
 
 NamiTests/
 ├── AppStateTests.swift       # 20 tests
 ├── RadioPlayerTests.swift    # 22 tests
-├── StationTests.swift        # 7 tests
+├── StationTests.swift        # 9 tests
 └── NamiAppTests.swift        # 7 tests
 ```
 
@@ -188,16 +201,15 @@ xcodebuild -scheme Nami clean build
 ### Testing
 
 ```bash
-# Setup test target (first time only)
-gem install xcodeproj
-ruby scripts/add_test_target.rb
-
 # Run tests
 xcodebuild test -scheme Nami -destination 'platform=macOS'
 
 # Run tests with coverage
 xcodebuild test -scheme Nami -destination 'platform=macOS' -enableCodeCoverage YES
 ```
+
+> When you add or change a station, keep the list in `scripts/check_streams.sh`
+> in sync with `Nami/Models/Station.swift` so the health probe stays accurate.
 
 ### Creating a Release
 
@@ -276,3 +288,5 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - Stream sources provided by respective radio stations
 - Built with SwiftUI and AVFoundation
+- Wave motif inspired by Mori Yuzan's _Hamonshu_ (波紋集, 1903), public domain
+- Frequency set in [Shippori Mincho](https://github.com/fontdasu/ShipporiMincho) (SIL Open Font License)
