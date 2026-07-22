@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/nami-demo.gif" width="260" alt="Nami's menu bar popover: 84.1 MHz FM Salus playing live, with ocean swells rolling behind the controls">
+  <img src="assets/nami-demo.gif" width="260" alt="Nami's menu bar popover: 78.9 MHz Shonan Beach FM playing live, with ocean swells rolling behind the controls">
 </p>
 
 Nami tunes into five hyper-local community FM stations along Japan's Shonan coast: surf reports from Shonan, temple bells from Kamakura, neighborhood listings from Chofu. It lives in your menu bar, reconnects itself when a stream drops, and runs a daily health check that catches a dead station before you do. Built with SwiftUI, zero external dependencies, about 30 MB of memory.
