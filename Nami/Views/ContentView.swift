@@ -11,49 +11,96 @@ enum Theme {
     static let coral = Color(red: 216 / 255, green: 160 / 255, blue: 140 / 255)  // #D8A08C (muted terracotta)
 }
 
-/// Rolling ocean swells across the lower popover. Each swell has its own
-/// wavelength, speed, and height, so the crests overlap and cross like real
-/// waves rather than sitting parallel like contour lines. Front swells are
-/// bolder and lower, back swells fainter and higher. They roll while `playing`
-/// and settle when paused. Every term stays Double so it type-checks fast.
+/// Hamonshu-style ocean swells across the lower popover. Each band is an
+/// asymmetric cresting swell (steep forward face, gentle back) topped with
+/// small curling foam tips (波頭), and a few spray dots drift above. Bands
+/// roll at mixed speeds and directions so their crests overlap like real
+/// water rather than sitting parallel like contour lines. They move while
+/// `playing` and settle when paused. Every term stays Double so it
+/// type-checks fast on strict-concurrency toolchains.
 struct OceanSwells: View {
     var playing: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private let swellCount = 4
+    private let bandCount = 4
 
     var body: some View {
         TimelineView(.animation(paused: !playing || reduceMotion)) { timeline in
             let t: Double = playing ? timeline.date.timeIntervalSinceReferenceDate : 0
             Canvas { ctx, size in
-                let width = Double(size.width)
-                let height = Double(size.height)
-                for s in 0..<swellCount {
-                    let f = Double(s) / Double(swellCount - 1)  // 0 back, 1 front
-                    let baseY = height * (0.50 + 0.42 * f)
-                    let amp = height * (0.045 + 0.06 * f)
-                    let wavelength = 1.6 + Double(s) * 0.8
-                    let drift = t * (0.3 + 0.28 * f) + Double(s) * 1.7
+                let w = Double(size.width)
+                let h = Double(size.height)
+                let color = Theme.seafoam
+
+                for b in 0..<bandCount {
+                    let f: Double = Double(b) / Double(bandCount - 1)  // 0 back .. 1 front
+                    let baseY: Double = h * (0.56 + 0.34 * f)
+                    let amp: Double = h * (0.05 + 0.05 * f)
+                    let waveLen: Double = 2.0 + f * 0.9
+                    let dir: Double = (b % 2 == 0) ? 1.0 : -0.75
+                    let phase: Double = t * (0.16 + 0.30 * f) * dir + Double(b) * 1.9
+                    let alpha: Double = 0.14 + 0.20 * f
+
                     var path = Path()
+                    var crestX: [Double] = []
+                    var y2: Double = baseY  // screen-y two samples ago
+                    var y1: Double = baseY  // screen-y one sample ago
                     var px: Double = 0
-                    while px <= width {
-                        let u = px / width
-                        let raw = sin(u * .pi * wavelength + drift)
-                        let crest = raw * abs(raw)  // peaked crests, flatter troughs
-                        let point = CGPoint(x: px, y: baseY - crest * amp)
+                    while px <= w {
+                        let u: Double = px / w
+                        let angle: Double = u * .pi * waveLen + phase
+                        let base: Double = sin(angle)
+                        let skew: Double = sin(angle + 0.6 * base)  // steepen the forward face
+                        let ripple: Double = sin(angle * 3.0 - phase) * 0.16
+                        let yy: Double = baseY - (skew + ripple) * amp
+                        let pt = CGPoint(x: px, y: yy)
                         if px == 0 {
-                            path.move(to: point)
+                            path.move(to: pt)
                         } else {
-                            path.addLine(to: point)
+                            path.addLine(to: pt)
                         }
+                        if px > 6 && y1 < y2 && y1 < yy {
+                            crestX.append(px - 3)  // local peak (screen-y grows downward)
+                        }
+                        y2 = y1
+                        y1 = yy
                         px += 3
                     }
-                    let alpha = 0.16 + 0.20 * f
                     ctx.stroke(
                         path,
-                        with: .color(Theme.seafoam.opacity(alpha)),
-                        style: StrokeStyle(lineWidth: 1.4, lineCap: .round)
+                        with: .color(color.opacity(alpha)),
+                        style: StrokeStyle(lineWidth: 1.1, lineCap: .round)
                     )
+
+                    // Foam curls at the crests of the front bands (sparse).
+                    if f > 0.45 {
+                        let sign: Double = dir >= 0 ? 1.0 : -1.0
+                        let cy: Double = baseY - amp
+                        for i in stride(from: 0, to: crestX.count, by: 2) {
+                            let cx: Double = crestX[i]
+                            var curl = Path()
+                            curl.move(to: CGPoint(x: cx - 4 * sign, y: cy + 2))
+                            curl.addQuadCurve(
+                                to: CGPoint(x: cx + 3 * sign, y: cy - 1),
+                                control: CGPoint(x: cx, y: cy - 4)
+                            )
+                            ctx.stroke(
+                                curl,
+                                with: .color(color.opacity(alpha + 0.06)),
+                                style: StrokeStyle(lineWidth: 1.0, lineCap: .round)
+                            )
+                        }
+                    }
+                }
+
+                // A few spray dots drifting above the swells.
+                for d in 0..<5 {
+                    let dp: Double = t * 0.25 + Double(d) * 1.7
+                    let fx: Double = Double(d) / 5.0 + 0.06 * sin(dp)
+                    let x: Double = (fx - floor(fx)) * w
+                    let y: Double = h * 0.60 + sin(dp * 1.5) * h * 0.05
+                    let rect = CGRect(x: x - 0.9, y: y - 0.9, width: 1.8, height: 1.8)
+                    ctx.fill(Path(ellipseIn: rect), with: .color(color.opacity(0.20)))
                 }
             }
         }
