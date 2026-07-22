@@ -60,6 +60,7 @@ struct OceanSwells: View {
     }
 }
 
+@MainActor
 struct ContentView: View {
     @Bindable var appState: AppState
     @State private var showTimePicker = false
