@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-23
+
 ### Added
 
 - Auto-reconnect with exponential backoff (5 retries: 2s, 4s, 8s, 16s, 32s) on stream failure
