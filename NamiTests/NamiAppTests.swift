@@ -1,3 +1,4 @@
+import AppKit
 import XCTest
 @testable import Nami
 
@@ -32,7 +33,8 @@ final class NamiAppTests: XCTestCase {
 
         // Should have created a popover
         XCTAssertNotNil(appDelegate.popover)
-        XCTAssertEqual(appDelegate.popover.contentSize, NSSize(width: 242, height: 340))
+        XCTAssertNotNil(appDelegate.popover.contentViewController)
+        XCTAssertTrue(appDelegate.popover.delegate === appDelegate)
         XCTAssertEqual(appDelegate.popover.behavior, .transient)
         XCTAssertTrue(appDelegate.popover.animates)
     }
@@ -43,6 +45,43 @@ final class NamiAppTests: XCTestCase {
 
         // Should have created an event monitor
         XCTAssertNotNil(appDelegate.eventMonitor)
+    }
+
+    func testPopoverFitsContentBeforeOpening() {
+        let appDelegate = AppDelegate()
+        appDelegate.setupStatusItem()
+        appDelegate.setupPopover()
+        defer {
+            appDelegate.popover.performClose(nil)
+            NSStatusBar.system.removeStatusItem(appDelegate.statusItem)
+        }
+        let fittingSize = appDelegate.popover.contentViewController!.view.fittingSize
+
+        appDelegate.togglePopover()
+
+        XCTAssertEqual(appDelegate.popover.contentSize, fittingSize)
+    }
+
+    func testPopoverReleasesContentAfterClosing() {
+        let appDelegate = AppDelegate()
+        appDelegate.setupPopover()
+        appDelegate.popover.animates = false
+        let window = NSWindow(
+            contentRect: NSRect(x: 100, y: 100, width: 100, height: 100),
+            styleMask: .borderless,
+            backing: .buffered,
+            defer: false
+        )
+        window.orderFront(nil)
+        defer { window.orderOut(nil) }
+        let anchor = window.contentView!
+        appDelegate.popover.show(relativeTo: anchor.bounds, of: anchor, preferredEdge: .minY)
+        XCTAssertTrue(appDelegate.popover.isShown)
+
+        appDelegate.popover.performClose(nil)
+
+        XCTAssertFalse(appDelegate.popover.isShown)
+        XCTAssertNil(appDelegate.popover.contentViewController)
     }
 
     func testTogglePopoverDoesNotCrash() {
