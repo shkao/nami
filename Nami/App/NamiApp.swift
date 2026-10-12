@@ -2,12 +2,14 @@ import CoreText
 import SwiftUI
 
 @main
-struct NamiApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
-    var body: some Scene {
-        Settings {
-            EmptyView()
+enum NamiApp {
+    @MainActor
+    static func main() {
+        let application = NSApplication.shared
+        let appDelegate = AppDelegate()
+        application.delegate = appDelegate
+        withExtendedLifetime(appDelegate) {
+            application.run()
         }
     }
 }
