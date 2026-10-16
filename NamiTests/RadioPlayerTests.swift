@@ -1,3 +1,4 @@
+import AVFoundation
 import XCTest
 @testable import Nami
 
@@ -234,6 +235,50 @@ final class RadioPlayerTests: XCTestCase {
 
         // Should be attempting to reconnect
         XCTAssertTrue(player.isPlaying)
+
+        player.pause()
+    }
+
+    // MARK: - Failure Handling Tests
+
+    func testNetworkLossWhileConnectingClearsLoading() {
+        let player = RadioPlayer()
+
+        player.play()
+        XCTAssertTrue(player.isLoading)
+
+        player.handleNetworkChange(isSatisfied: false)
+
+        XCTAssertFalse(player.isLoading)
+        XCTAssertFalse(player.isPlaying)
+        XCTAssertTrue(player.isReconnecting)
+
+        player.pause()
+    }
+
+    func testStaleItemFailureIsIgnored() {
+        let player = RadioPlayer()
+        let staleItem = AVPlayerItem(url: Station.kamakuraFM.streamURL)
+
+        player.play()
+        player.handleStatusChange(.failed, of: staleItem)
+
+        XCTAssertTrue(player.isPlaying)
+        XCTAssertFalse(player.isReconnecting)
+        XCTAssertNil(player.errorMessage)
+
+        player.pause()
+    }
+
+    func testStaleItemEndIsIgnored() {
+        let player = RadioPlayer()
+        let staleItem = AVPlayerItem(url: Station.kamakuraFM.streamURL)
+
+        player.play()
+        player.handleStreamEnded(of: staleItem)
+
+        XCTAssertTrue(player.isPlaying)
+        XCTAssertFalse(player.isReconnecting)
 
         player.pause()
     }

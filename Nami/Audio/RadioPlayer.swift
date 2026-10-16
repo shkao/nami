@@ -20,6 +20,7 @@ final class RadioPlayer {
     private var statusObserver: NSKeyValueObservation?
     private var bufferObserver: NSKeyValueObservation?
     private var stallObserver: NSKeyValueObservation?
+    private var endObservers: [NSObjectProtocol] = []
     private var qualityTimer: Timer?
     @ObservationIgnored
     nonisolated(unsafe) private var pathMonitor: NWPathMonitor?
@@ -172,15 +173,16 @@ final class RadioPlayer {
     private func startNetworkMonitoring() {
         pathMonitor = NWPathMonitor()
         pathMonitor?.pathUpdateHandler = { [weak self] path in
+            let isSatisfied = path.status == .satisfied
             Task { @MainActor [weak self] in
-                self?.handleNetworkChange(path)
+                self?.handleNetworkChange(isSatisfied: isSatisfied)
             }
         }
         pathMonitor?.start(queue: monitorQueue)
     }
 
-    private func handleNetworkChange(_ path: NWPath) {
-        if path.status == .satisfied {
+    func handleNetworkChange(isSatisfied: Bool) {
+        if isSatisfied {
             logger.info("Network available")
             if isReconnecting {
                 retryCount = 0
@@ -191,6 +193,7 @@ final class RadioPlayer {
             if isPlaying && !isReconnecting {
                 cleanupPlayer()
                 isPlaying = false
+                isLoading = false
                 isReconnecting = true
                 errorMessage = "No network connection"
             }
@@ -224,7 +227,7 @@ final class RadioPlayer {
         statusObserver = playerItem?.observe(\.status, options: [.new]) { [weak self] item, _ in
             let status = item.status
             Task { @MainActor [weak self] in
-                self?.handleStatusChange(status)
+                self?.handleStatusChange(status, of: item)
             }
         }
 
@@ -239,6 +242,28 @@ final class RadioPlayer {
                 self?.updateSignalQuality()
             }
         }
+
+        // A live stream that drops after readyToPlay never reports .failed;
+        // AVPlayer posts one of these instead.
+        guard let item = playerItem else { return }
+        endObservers = [AVPlayerItem.failedToPlayToEndTimeNotification, AVPlayerItem.didPlayToEndTimeNotification]
+            .map { name in
+                NotificationCenter.default.addObserver(forName: name, object: item, queue: .main) { [weak self] _ in
+                    Task { @MainActor [weak self] in
+                        self?.handleStreamEnded(of: item)
+                    }
+                }
+            }
+    }
+
+    func handleStreamEnded(of item: AVPlayerItem) {
+        guard item === playerItem else { return }
+        logger.warning("Stream ended unexpectedly")
+        cleanupPlayer()
+        isPlaying = false
+        isLoading = false
+        errorMessage = "Stream interrupted"
+        attemptReconnect()
     }
 
     private func updateSignalQuality() {
@@ -284,7 +309,8 @@ final class RadioPlayer {
         }
     }
 
-    private func handleStatusChange(_ status: AVPlayerItem.Status) {
+    func handleStatusChange(_ status: AVPlayerItem.Status, of item: AVPlayerItem) {
+        guard item === playerItem else { return }
         switch status {
         case .readyToPlay:
             isLoading = false
@@ -295,7 +321,7 @@ final class RadioPlayer {
         case .failed:
             isLoading = false
             isPlaying = false
-            let error = playerItem?.error?.localizedDescription ?? "Failed to load stream"
+            let error = item.error?.localizedDescription ?? "Failed to load stream"
             errorMessage = error
             logger.error("Stream failed: \(error)")
             attemptReconnect()
@@ -315,6 +341,8 @@ final class RadioPlayer {
         bufferObserver = nil
         stallObserver?.invalidate()
         stallObserver = nil
+        endObservers.forEach(NotificationCenter.default.removeObserver)
+        endObservers = []
         player?.pause()
         player = nil
         playerItem = nil
