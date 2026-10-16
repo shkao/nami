@@ -150,6 +150,7 @@ final class AppState {
     }
 
     private func sleepTimerFired() {
+        sleepTimer?.invalidate()
         sleepTimerEndDate = nil
         sleepTimer = nil
         pause()
