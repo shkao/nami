@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Reconnect when a live stream drops mid-play instead of going silent
+- Stop the loading spinner when the network drops during connect, and let the play button cancel a connect in progress
+- Ignore late status callbacks from a previous station's stream, so a station switch can't show the old station's error
+- Launch at Login toggle no longer flips back and forth when SMAppService rejects the change
+- Sleep timer no longer pauses a second time after firing on wake
+- No empty settings window on startup
+- Release the popover's content while hidden and size it to fit
+
 ## [1.1.0] - 2026-07-23
 
 ### Added
@@ -20,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Station picker rows show frequency and location
 - Custom app icon and menu bar template icon (flowing Hamonshu wave lines)
 - Bundled Shippori Mincho typeface (subset) for the frequency display
-- Drifting Hamonshu current behind the popover: flowing contour lines that drift while playing and settle when paused
+- Hamonshu ocean swells behind the popover: cresting swells with foam curls and spray that roll while playing and settle when paused
 - Stream health monitoring: `scripts/check_streams.sh` and a daily Stream Health GitHub Action that check every station's stream
 - Tooltips on all controls
 - VoiceOver accessibility labels on all controls
