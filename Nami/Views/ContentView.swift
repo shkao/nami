@@ -297,7 +297,6 @@ struct ContentView: View {
                     .frame(width: 44, height: 44)
                 }
                 .buttonStyle(.plain)
-                .disabled(appState.isLoading)
                 .accessibilityLabel(appState.isPlaying ? "Pause" : "Play")
                 .help(appState.isPlaying ? "Pause" : "Play")
 
@@ -416,7 +415,7 @@ struct ContentView: View {
 
                 HStack {
                     Menu {
-                        Toggle("Launch at Login", isOn: $launchAtLogin)
+                        Toggle("Launch at Login", isOn: launchAtLoginBinding)
                     } label: {
                         HStack(spacing: 3) {
                             Text("Settings")
@@ -444,18 +443,27 @@ struct ContentView: View {
                 .padding(.top, 9)
                 .padding(.bottom, 10)
             }
-            .onChange(of: launchAtLogin) { _, enabled in
+        }
+    }
+
+    /// Applies the change to SMAppService first and only flips the toggle on
+    /// success, so a failed register or unregister can't bounce back and forth.
+    private var launchAtLoginBinding: Binding<Bool> {
+        Binding(
+            get: { launchAtLogin },
+            set: { enabled in
                 do {
                     if enabled {
                         try SMAppService.mainApp.register()
                     } else {
                         try SMAppService.mainApp.unregister()
                     }
+                    launchAtLogin = enabled
                 } catch {
-                    launchAtLogin = !enabled
+                    launchAtLogin = SMAppService.mainApp.status == .enabled
                 }
             }
-        }
+        )
     }
 
     private func stationMenuTitle(for station: Station) -> String {
