@@ -93,7 +93,7 @@ xcodebuild -scheme Nami -configuration Debug build
 xcodebuild test -scheme Nami -destination 'platform=macOS'
 ```
 
-The suite has 63 tests across `AppState`, `RadioPlayer`, `Station`, and app setup. When you add or change a station, update both `Nami/Models/Station.swift` and the list in `scripts/check_streams.sh` so the health probe stays accurate.
+The suite has 65 tests across `AppState`, `RadioPlayer`, `Station`, and app setup, including two end-to-end reconnect tests that play a local stream and take about 20 s. When you add or change a station, update both `Nami/Models/Station.swift` and the list in `scripts/check_streams.sh` so the health probe stays accurate.
 
 Tagging a version ships a release: pushing `vX.Y.Z` runs the tests, builds Release with the version injected from the tag, and publishes a GitHub Release with the zipped app.
 

@@ -350,6 +350,14 @@ final class RadioPlayer {
         stallCount = 0
     }
 
+    /// Whether a player, its item, KVO or end observers, or the quality timer
+    /// are alive. Read by tests to check that cleanupPlayer() ran.
+    var holdsPlayerResources: Bool {
+        player != nil || playerItem != nil || statusObserver != nil
+            || bufferObserver != nil || stallObserver != nil
+            || !endObservers.isEmpty || qualityTimer != nil
+    }
+
     deinit {
         pathMonitor?.cancel()
         retryTask?.cancel()

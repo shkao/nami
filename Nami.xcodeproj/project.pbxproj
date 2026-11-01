@@ -24,6 +24,7 @@
 		C996733EA9EFA680B868C3C4 /* RadioPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EE1A3BF33D61BC5BDD76AA /* RadioPlayerTests.swift */; };
 		CC60ACC66BEE14582F7B38DE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BEF01093A2E91907A83A2F5 /* Cocoa.framework */; };
 		D58222E7FB8CEEC85116B5D1 /* NamiAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E678A249627B4244E43BD6C9 /* NamiAppTests.swift */; };
+		7E1A2C3D4F5061728394A5B6 /* RadioPlayerReconnectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1A2C3D4F5061728394A5B7 /* RadioPlayerReconnectTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		E8D0EE6F5366F4C9455FA8F1 /* NamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5929EA66CFE537C003DB320 /* RadioPlayerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RadioPlayerTests.swift; sourceTree = "<group>"; };
 		FE83921457DBC154B6DE8EA0 /* StationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StationTests.swift; sourceTree = "<group>"; };
+		7E1A2C3D4F5061728394A5B7 /* RadioPlayerReconnectTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RadioPlayerReconnectTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 				CFE7C2E9FE245B2ACBA788F7 /* AppStateTests.swift */,
 				5CD9A226A9E2C602C4453826 /* NamiAppTests.swift */,
 				F5929EA66CFE537C003DB320 /* RadioPlayerTests.swift */,
+				7E1A2C3D4F5061728394A5B7 /* RadioPlayerReconnectTests.swift */,
 			);
 			name = NamiTests;
 			path = NamiTests;
@@ -318,6 +321,7 @@
 				254326D369344F33AC79086F /* AppStateTests.swift in Sources */,
 				78596E05C0910EFEE41F8755 /* NamiAppTests.swift in Sources */,
 				5B2121CD8DBF155606724A0D /* RadioPlayerTests.swift in Sources */,
+				7E1A2C3D4F5061728394A5B6 /* RadioPlayerReconnectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
