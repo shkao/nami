@@ -380,6 +380,7 @@ struct ContentView: View {
                         .datePickerStyle(.field)
                         .labelsHidden()
                         .frame(width: 70)
+                        .help("Stop time")
 
                         Button(appState.isSleepTimerActive ? "Update" : "Set") {
                             let calendar = Calendar.current
@@ -391,6 +392,7 @@ struct ContentView: View {
                         .font(.system(size: 10))
                         .buttonStyle(.plain)
                         .foregroundStyle(Theme.seafoam)
+                        .help(appState.isSleepTimerActive ? "Update stop time" : "Stop playback at this time")
 
                         if appState.isSleepTimerActive {
                             Button("Off") {
@@ -400,6 +402,7 @@ struct ContentView: View {
                             .font(.system(size: 10))
                             .buttonStyle(.plain)
                             .foregroundStyle(Theme.coral)
+                            .help("Cancel sleep timer")
                         }
                     }
                 }
@@ -414,6 +417,7 @@ struct ContentView: View {
                 HStack {
                     Menu {
                         Toggle("Launch at Login", isOn: launchAtLoginBinding)
+                            .help("Open Nami when you log in")
                     } label: {
                         HStack(spacing: 3) {
                             Text("Settings")
