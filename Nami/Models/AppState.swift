@@ -158,9 +158,7 @@ final class AppState {
     }
 
     private func sleepTimerFired() {
-        sleepTimer?.invalidate()
-        sleepTimerEndDate = nil
-        sleepTimer = nil
+        cancelSleepTimer()
         pause()
         logger.info("Sleep timer fired, playback stopped")
     }
