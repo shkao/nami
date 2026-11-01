@@ -84,9 +84,9 @@ final class AppState {
 
     func togglePlayback() {
         if isPlaying {
-            radioPlayer.pause()
+            pause()
         } else {
-            radioPlayer.play()
+            play()
         }
     }
 
