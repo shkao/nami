@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-11-01
+
+### Fixed
+
+- Sleep timer presets (15, 30, 60 min) now run for the full time instead of stopping up to a minute early
+- Release the failed stream's player right away instead of keeping it alive through the reconnect wait
+
 ## [1.1.1] - 2026-10-17
 
 ### Fixed
