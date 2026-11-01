@@ -39,24 +39,26 @@ probe_once() {
     origin_args=(-H "Origin: ${SMARTSTREAM_ORIGIN}")
   fi
 
+  # HLS playlists are small: fetch in full and confirm it parses.
+  # Icecast is an endless stream: grab a little and just confirm it opens.
+  local range_args=()
+  if [[ "$url" != *.m3u8 ]]; then
+    range_args=(-r 0-2047)
+  fi
+
   local body_file code
   body_file="$(mktemp)"
+  code="$(curl -s -o "$body_file" -w '%{http_code}' \
+    --max-time "$TIMEOUT" -A "$UA" ${origin_args[@]+"${origin_args[@]}"} \
+    ${range_args[@]+"${range_args[@]}"} "$url" 2>/dev/null)"
 
   if [[ "$url" == *.m3u8 ]]; then
-    # HLS playlists are small: fetch in full and confirm it parses.
-    code="$(curl -s -o "$body_file" -w '%{http_code}' \
-      --max-time "$TIMEOUT" -A "$UA" ${origin_args[@]+"${origin_args[@]}"} \
-      "$url" 2>/dev/null)"
     if [[ "$code" == "200" ]] && grep -q "#EXTM3U" "$body_file"; then
       echo "OK HTTP $code"
     else
       echo "FAIL HTTP $code"
     fi
   else
-    # Icecast is an endless stream: grab a little and just confirm it opens.
-    code="$(curl -s -o "$body_file" -w '%{http_code}' \
-      --max-time "$TIMEOUT" -A "$UA" ${origin_args[@]+"${origin_args[@]}"} \
-      -r 0-2047 "$url" 2>/dev/null)"
     if [[ "$code" == "200" || "$code" == "206" ]]; then
       echo "OK HTTP $code"
     else
