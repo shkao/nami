@@ -109,7 +109,7 @@ struct OceanSwells: View {
 
 @MainActor
 struct ContentView: View {
-    @Bindable var appState: AppState
+    let appState: AppState
     @State private var showTimePicker = false
     @AppStorage("sleepTimerHour") private var sleepTimerHour = 22
     @AppStorage("sleepTimerMinute") private var sleepTimerMinute = 30
