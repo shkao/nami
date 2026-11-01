@@ -94,10 +94,17 @@ final class RadioPlayer {
 
     func pause() {
         cancelReconnect()
+        stopPlayer()
+        logger.info("Paused")
+    }
+
+    private func stopPlayer(error: String? = nil) {
         cleanupPlayer()
         isPlaying = false
         isLoading = false
-        logger.info("Paused")
+        if let error {
+            errorMessage = error
+        }
     }
 
     private func startPlayback() {
@@ -191,11 +198,8 @@ final class RadioPlayer {
         } else {
             logger.warning("Network lost")
             if isPlaying && !isReconnecting {
-                cleanupPlayer()
-                isPlaying = false
-                isLoading = false
+                stopPlayer(error: "No network connection")
                 isReconnecting = true
-                errorMessage = "No network connection"
             }
         }
     }
@@ -259,10 +263,7 @@ final class RadioPlayer {
     func handleStreamEnded(of item: AVPlayerItem) {
         guard item === playerItem else { return }
         logger.warning("Stream ended unexpectedly")
-        cleanupPlayer()
-        isPlaying = false
-        isLoading = false
-        errorMessage = "Stream interrupted"
+        stopPlayer(error: "Stream interrupted")
         attemptReconnect()
     }
 
@@ -319,10 +320,8 @@ final class RadioPlayer {
             errorMessage = nil
             logger.info("Stream ready")
         case .failed:
-            isLoading = false
-            isPlaying = false
             let error = item.error?.localizedDescription ?? "Failed to load stream"
-            errorMessage = error
+            stopPlayer(error: error)
             logger.error("Stream failed: \(error)")
             attemptReconnect()
         case .unknown:
