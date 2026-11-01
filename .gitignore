@@ -24,3 +24,6 @@ playground.xcworkspace
 
 # SwiftPM
 .build/
+
+# Claude Code local settings
+.claude/settings.local.json
