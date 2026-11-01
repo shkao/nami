@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-11-01
+
 ### Fixed
 
 - Tooltips on the sleep timer's stop time, Set/Update and Off controls, and the Launch at Login toggle
