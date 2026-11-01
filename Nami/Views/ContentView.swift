@@ -224,11 +224,9 @@ struct ContentView: View {
                         .font(.custom("ShipporiMincho-Medium", size: 42))
                         .monospacedDigit()
                         .foregroundStyle(Theme.foam)
-                    if appState.currentStation.isFrequencyNumeric {
-                        Text("MHz")
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundStyle(Theme.foam.opacity(0.5))
-                    }
+                    Text("MHz")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(Theme.foam.opacity(0.5))
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("\(appState.currentStation.frequency) megahertz")

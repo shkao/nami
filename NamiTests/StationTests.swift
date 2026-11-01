@@ -21,13 +21,6 @@ final class StationTests: XCTestCase {
         XCTAssertNotEqual(station1, station3)
     }
 
-    func testIsFrequencyNumeric() {
-        // All current stations have numeric frequencies
-        for station in Station.allStations {
-            XCTAssertTrue(station.isFrequencyNumeric, "\(station.name) should have numeric frequency")
-        }
-    }
-
     func testStationStreamURLValid() {
         for station in Station.allStations {
             XCTAssertNotNil(station.streamURL.scheme)

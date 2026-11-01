@@ -7,10 +7,6 @@ struct Station: Identifiable, Equatable {
     let location: String
     let streamURL: URL
 
-    var isFrequencyNumeric: Bool {
-        Double(frequency) != nil
-    }
-
     var streamType: String {
         streamURL.path.hasSuffix(".m3u8") ? "HLS" : "Icecast"
     }
