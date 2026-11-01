@@ -99,17 +99,18 @@ final class AppState {
     }
 
     func nextStation() {
-        let stations = Station.allStations
-        guard let currentIndex = stations.firstIndex(of: currentStation) else { return }
-        let nextIndex = (currentIndex + 1) % stations.count
-        currentStation = stations[nextIndex]
+        stepStation(by: 1)
     }
 
     func previousStation() {
+        stepStation(by: -1)
+    }
+
+    private func stepStation(by offset: Int) {
         let stations = Station.allStations
         guard let currentIndex = stations.firstIndex(of: currentStation) else { return }
-        let previousIndex = (currentIndex - 1 + stations.count) % stations.count
-        currentStation = stations[previousIndex]
+        let newIndex = (currentIndex + offset + stations.count) % stations.count
+        currentStation = stations[newIndex]
     }
 
     // MARK: - Sleep Timer
