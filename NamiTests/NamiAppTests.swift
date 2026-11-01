@@ -5,6 +5,12 @@ import XCTest
 @MainActor
 final class NamiAppTests: XCTestCase {
 
+    func testTestHostSkipsTheMenuBarItem() {
+        // The suite runs inside Nami.app; installing the delegate there puts
+        // a second Nami icon in the menu bar for the whole test run.
+        XCTAssertFalse(NSApplication.shared.delegate is AppDelegate)
+    }
+
     func testAppDelegateInitialization() {
         let appDelegate = AppDelegate()
 
@@ -15,6 +21,7 @@ final class NamiAppTests: XCTestCase {
     func testSetupStatusItemCreatesButton() {
         let appDelegate = AppDelegate()
         appDelegate.setupStatusItem()
+        defer { NSStatusBar.system.removeStatusItem(appDelegate.statusItem) }
 
         // Should have created a status item
         XCTAssertNotNil(appDelegate.statusItem)
@@ -88,6 +95,7 @@ final class NamiAppTests: XCTestCase {
         let appDelegate = AppDelegate()
         appDelegate.setupStatusItem()
         appDelegate.setupPopover()
+        defer { NSStatusBar.system.removeStatusItem(appDelegate.statusItem) }
 
         // NSPopover.show() requires a real window hierarchy, so isShown stays false in tests.
         // Verify togglePopover doesn't crash and popover starts not shown.
@@ -116,6 +124,7 @@ final class NamiAppTests: XCTestCase {
 
         // This should not crash and should call all setup methods
         appDelegate.applicationDidFinishLaunching(Notification(name: NSApplication.didFinishLaunchingNotification))
+        defer { NSStatusBar.system.removeStatusItem(appDelegate.statusItem) }
 
         // Verify that setup happened
         XCTAssertNotNil(appDelegate.statusItem)

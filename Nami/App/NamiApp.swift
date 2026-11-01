@@ -6,6 +6,12 @@ enum NamiApp {
     @MainActor
     static func main() {
         let application = NSApplication.shared
+        // Unit tests run inside this app. Skip the delegate there so a test
+        // run doesn't add a second Nami icon next to the installed one.
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+            application.run()
+            return
+        }
         let appDelegate = AppDelegate()
         application.delegate = appDelegate
         withExtendedLifetime(appDelegate) {
