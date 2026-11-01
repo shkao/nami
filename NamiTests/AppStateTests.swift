@@ -177,6 +177,22 @@ final class AppStateTests: XCTestCase {
         appState.cancelSleepTimer()
     }
 
+    func testSleepTimerAfterIntervalKeepsSeconds() {
+        let appState = AppState()
+
+        let start = Date()
+        appState.setSleepTimer(after: 90)
+
+        XCTAssertTrue(appState.isSleepTimerActive)
+        XCTAssertNotNil(appState.sleepTimerEndDate)
+
+        if let endDate = appState.sleepTimerEndDate {
+            XCTAssertEqual(endDate.timeIntervalSince(start), 90, accuracy: 1)
+        }
+
+        appState.cancelSleepTimer()
+    }
+
     func testPlayPauseCycle() {
         let appState = AppState()
 

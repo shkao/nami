@@ -115,8 +115,6 @@ final class AppState {
     // MARK: - Sleep Timer
 
     func setSleepTimer(at targetTime: Date) {
-        cancelSleepTimer()
-
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: targetTime)
         let minute = calendar.component(.minute, from: targetTime)
@@ -131,6 +129,16 @@ final class AppState {
         if fireDate <= Date() {
             fireDate = calendar.date(byAdding: .day, value: 1, to: fireDate) ?? fireDate
         }
+
+        scheduleSleepTimer(at: fireDate)
+    }
+
+    func setSleepTimer(after interval: TimeInterval) {
+        scheduleSleepTimer(at: Date().addingTimeInterval(interval))
+    }
+
+    private func scheduleSleepTimer(at fireDate: Date) {
+        cancelSleepTimer()
 
         sleepTimerEndDate = fireDate
         logger.info("Sleep timer set for \(fireDate, privacy: .public)")

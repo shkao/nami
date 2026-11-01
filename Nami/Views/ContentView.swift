@@ -183,7 +183,7 @@ struct ContentView: View {
 
     private func sleepPresetChip(minutes: Int) -> some View {
         Button("\(minutes) min") {
-            appState.setSleepTimer(at: Date().addingTimeInterval(TimeInterval(minutes * 60)))
+            appState.setSleepTimer(after: TimeInterval(minutes * 60))
             showTimePicker = false
         }
         .font(.system(size: 10))
